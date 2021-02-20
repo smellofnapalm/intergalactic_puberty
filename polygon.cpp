@@ -1,2 +1,2 @@
 #include "polygon.h"
-printf("Goodbye World!");
+printf("Hello World!");
