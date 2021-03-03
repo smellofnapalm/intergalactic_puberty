@@ -139,13 +139,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Circle.cpp" />
     <ClCompile Include="..\menu.cpp" />
+    <ClCompile Include="..\Point.cpp" />
     <ClCompile Include="..\polygon.cpp" />
+    <ClCompile Include="..\Triangle.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Circle.h" />
     <ClInclude Include="..\menu.hpp" />
+    <ClInclude Include="..\Point.h" />
     <ClInclude Include="..\polygon.h" />
+    <ClInclude Include="..\Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

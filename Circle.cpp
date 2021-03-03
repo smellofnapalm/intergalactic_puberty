@@ -1,14 +1,12 @@
 #include "Circle.h"
 
-
-
 Circle::Circle(Point a, double r)
 {
 	set_a(a);
 	set_r(r);
 }
 
-double Circle::get_a() const { return _a; }
+Point Circle::get_a() const { return _a; }
 double Circle::get_r() const { return _r; }
 
 void Circle::set_a(Point a) { _a = a; }
