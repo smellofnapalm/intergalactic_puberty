@@ -1,4 +1,10 @@
 #include "Triangle.h"
+const double EPS = 1e-6;
+
+bool rect_check(double a, double b, double c) {
+	return abs(a * a - b * b - c * c) < EPS || abs(b * b - c * c - a * a) < EPS || abs(c * c - b * b - a * a) < EPS;
+}
+
 
 Triangle::Triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
 
@@ -17,7 +23,7 @@ Triangle::Triangle(const Point a, const Point b, const Point c) {
 Triangle::Triangle(vector<Point> W) {
 
 	A = W[0], B = W[1], C = W[2];
-		
+
 }
 
 void Triangle::set_sides() {
@@ -34,6 +40,7 @@ bool Triangle::exist_check() {
 
 }
 
+
 void Triangle::set_perimetr() {
 
 	P = AB + BC + AC;
@@ -49,9 +56,10 @@ void Triangle::set_area() {
 
 void Triangle::set_angles() {
 
-	alpha = asin(BC / (2 * R));
-	beta = asin(AC / (2 * R));
-	gamma = asin(AB / (2 * R));
+	double pi = 3.1415926535;
+	alpha = asin(BC / (2 * R)) * 180 / pi;
+	beta = asin(AC / (2 * R)) * 180 / pi;
+	gamma = asin(AB / (2 * R)) * 180 / pi;
 
 }
 
@@ -97,18 +105,24 @@ void Triangle::set_medians() {
 
 void Triangle::set_type() {
 
-	if (alpha > 90 || beta > 90 || gamma > 90) {
-		type += "Тупоугольный";
+	if (rect_check(AB, BC, AC)) {
+		type += "Rectangular";
 	}
-	else if (alpha == 90 || beta == 90 || gamma == 90) {
-		type += "Прямоугольный";
+
+	else if (alpha > 90 || beta > 90 || gamma > 90) {
+		type += "Obtuse-angled";
 	}
+
 	else {
-		type += "Остроугольный";
+		type += "Sharp-angled";
 	}
 
 	if (AC == BC == AB) {
-		type += ", правильный";
+		type += ", right";
+	}
+
+	else if (AC == BC || AB == AC || BC == AB) {
+		type += ", isosceles";
 	}
 
 
@@ -128,7 +142,7 @@ double Triangle::get_perimetr() const {
 
 vector<double> Triangle::get_sides() const {
 
-	vector<double> A = { BC, AC, AB };
+	vector<double> A = { AB, AC, BC };
 	return A;
 
 }
@@ -187,35 +201,47 @@ void output(Triangle& triangle) {
 	}
 
 	cout << "Type is: " << triangle.get_type() << endl;
-	auto arr = triangle.get_sides();
+	vector<double> arr = triangle.get_sides();
 	cout << "AB = " << arr[0] << " AC = " << arr[1] << " BC = " << arr[2] << endl;
-	auto arr = triangle.get_angles();
+	arr = triangle.get_angles();
 	cout << "Angles in A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
-	cout << "Perimetr = " << triangle.get_perimetr() << endl;
+	cout << "Perimeter = " << triangle.get_perimetr() << endl;
 	cout << "Area = " << triangle.get_area() << endl;
 	cout << "R = " << triangle.get_R() << endl;
 	cout << "r = " << triangle.get_r() << endl;
-	auto arr = triangle.get_heights();
-	cout << "Height from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2];
-	auto arr = triangle.get_bisectors();
-	cout << "Bisector from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2];
-	auto arr = triangle.get_medians();
-	cout << "Median from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2];
+	arr = triangle.get_heights();
+	cout << "Height from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
+	arr = triangle.get_bisectors();
+	cout << "Bisector from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
+	arr = triangle.get_medians();
+	cout << "Median from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
 
 }
 
-void Triangle::create_triangle() {
+void create_triangle() {
 
-	cout << "You are creating the Triangle.";
+	cout << fixed << setprecision(2) << "You are creating the Triangle." << endl;
 	Point A, B, C;
-	cout << endl << "Input point А: ";
+	cout << "Input point A: ";
 	cin >> A;
-	cout << endl << "Input point B: ";
+	cout << "Input point B: ";
 	cin >> B;
-	cout << endl << "Input point C: ";
+	cout << "Input point C: ";
 	cin >> C;
 
 	Triangle triangle(A, B, C);
+
+	triangle.set_sides();
+	triangle.set_perimetr();
+	triangle.set_area();
+	triangle.set_r();
+	triangle.set_R();
+	triangle.set_angles();
+	triangle.set_type();
+	triangle.set_medians();
+	triangle.set_bisectors();
+	triangle.set_heights();
+
 	output(triangle);
 
 }

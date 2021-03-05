@@ -26,8 +26,6 @@ public:
 
 	bool exist_check();
 
-	void create_triangle();
-
 	void set_area();
 	void set_perimetr();
 	void set_sides();
@@ -51,7 +49,7 @@ public:
 	vector<double> get_heights() const;
 	vector<double> get_bisectors() const;
 
-	~Triangle();
-
 };
 
+void output(Triangle& triangle);
+void create_triangle();
