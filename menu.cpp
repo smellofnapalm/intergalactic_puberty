@@ -47,7 +47,16 @@ void create_polygon()
 	cout << "Now enter the coordinates of points in the correct order\n";
 	for (int i = 0; i < n; i++)
 		cin >> points[i];
-	auto polygon = Polygon(points);
+	Polygon polygon;
+	try
+	{
+		polygon = Polygon(points);
+	}
+	catch (const exception& ex)
+	{
+		cout << ex.what() << endl;
+		return;
+	}
 	cout << polygon;
 }
 

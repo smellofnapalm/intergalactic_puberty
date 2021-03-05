@@ -140,12 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Circle.cpp" />
+    <ClCompile Include="..\menu.cpp" />
     <ClCompile Include="..\Point.cpp" />
     <ClCompile Include="..\polygon.cpp" />
     <ClCompile Include="..\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Circle.h" />
+    <ClInclude Include="..\menu.hpp" />
     <ClInclude Include="..\Point.h" />
     <ClInclude Include="..\polygon.h" />
     <ClInclude Include="..\Triangle.h" />
