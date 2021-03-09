@@ -1,4 +1,6 @@
 ﻿#include "polygon.h"
+#include "Triangle.h"
+#include "Line.h"
 ifstream in;
 const string path1 = "input1.txt";
 const string path2 = "input2.txt";
@@ -24,12 +26,26 @@ void create_point()
 
 void create_line()
 {
-	// TO DO
+	Point p0, p1;
+	cout << "Enter two points of the line:\n";
+	in >> p0 >> p1;
+	Line l = Line(p0, p1);
+	cout << l;
 }
 
 void create_triangle()
 {
-	// TO DO
+	cout << "You are creating the Triangle.";
+	Point A, B, C;
+	cout << endl << "Input point А: ";
+	cin >> A;
+	cout << endl << "Input point B: ";
+	cin >> B;
+	cout << endl << "Input point C: ";
+	cin >> C;
+
+	Triangle triangle(A, B, C);
+	output(triangle);
 }
 
 void create_circle()
@@ -67,7 +83,7 @@ int print_menu(vector<string> mas = v)
 	while (true)
 	{
 		cout << "Choose a menu item you need:\n\n";
-		cout << "Press ESC to quit¸\n";
+		cout << "Press ESC to quit\n";
 		for (int i = 0; i < N; i++)
 		{
 			if (i != key)

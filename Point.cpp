@@ -91,6 +91,16 @@ double vector_product(const Vector& a, const Vector& b)
 	return a.get_x() * b.get_y() - a.get_y() * b.get_x();
 }
 
+Vector Vector::rotate_vector(const Vector& v, double angle, const Point& center)
+{
+	Vector new_v = v;
+	new_v = new_v - center;
+	new_v.set_x(cos(angle) * new_v.get_x() - sin(angle) * new_v.get_y());
+	new_v.set_y(sin(angle) * new_v.get_x() + cos(angle) * new_v.get_y());
+	new_v = new_v + center;
+	return new_v;
+}
+
 Vector::Vector(double x, double y)
 {
 	this->set_x(x);
@@ -107,4 +117,9 @@ Vector::Vector(const Point& p)
 {
 	this->set_x(p.get_x());
 	this->set_y(p.get_y());
+}
+
+double Vector::length()
+{
+	return sqrt(x*x + y*y);
 }

@@ -56,4 +56,6 @@ public:
 
 	friend double operator*(const Vector&, const Vector&);
 	friend double vector_product(const Vector&, const Vector&);
+	static Vector rotate_vector(const Vector&, double, const Point&);
+	double length();
 };

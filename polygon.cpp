@@ -102,16 +102,11 @@ Polygon operator-(const Polygon& polygon, const Vector& shift)
 	return Polygon(new_points);
 }
 
-void Polygon::rotate_polygon(double angle,const Point& p)
+void Polygon::rotate_polygon(double angle, const Point& p)
 {
 	int n = points.size();
 	for (int i = 0; i < n; i++)
-	{
-		points[i] = points[i] - p;
-		points[i].set_x(cos(angle) * points[i].get_x() - sin(angle) * points[i].get_y());
-		points[i].set_y(sin(angle) * points[i].get_x() + cos(angle) * points[i].get_y());
-		points[i] = points[i] + p;
-	}
+		points[i] = Vector::rotate_vector(points[i], angle, p);
 }
 
 istream& operator>>(istream& in, Polygon& polygon)
