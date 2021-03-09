@@ -16,6 +16,7 @@ public:
 	Line(const Point&, const Point&);
 	Line(const Point&, const Vector&);
 
+	void set_p0(double);
 	void set_p0();
 	void set_v();
 	void set_n();
@@ -29,7 +30,7 @@ public:
 	Vector get_n() const { return n; };
 
 	// If line(x, y): Ax + By + C = 0, than line[x] = y
-	double operator[] (double);
+	double operator[] (double) const;
 
 	// <!> I don't know how to implement different ways
 	// <!> to actually input the line, so I've chosen the simplest
@@ -37,4 +38,36 @@ public:
 	friend istream& operator>> (istream&, Line&);
 
 	friend ostream& operator<< (ostream&, const Line&);
+};
+
+class Ray : public Line
+{
+protected:
+	// The point from needed half of the line
+	Point p1 = { 0, 0 };
+public:
+	Ray() {}
+	Ray(const Line&, double, double);
+	Ray(const Point&, const Point&);
+
+	friend istream& operator>> (istream&, Ray&);
+};
+
+class Segment : public Line
+{
+protected:
+	// Right end point of the segment
+	Point p1 = { 0, 0 };
+
+	// The middle of the segment
+	Point avr_point = { 0, 0 };
+public:
+	Segment() {}
+	Segment(const Line&, double, double);
+	Segment(const Point&, const Point&);
+
+	Point get_p1() const { return p1; }
+	Point get_avr() const { return avr_point; }
+
+	friend istream& operator>> (istream&, Segment&);
 };

@@ -5,7 +5,7 @@ const vector<string> v =
 {
 	"Create a new point",
 	"Create a new line",
-	"Create a new triange",
+	"Create a new triangle",
 	"Create a new circle",
 	"Create a new polygon"
 };

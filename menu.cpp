@@ -1,15 +1,12 @@
 ﻿#include "polygon.h"
 #include "Triangle.h"
 #include "Line.h"
-ifstream in;
-const string path1 = "input1.txt";
-const string path2 = "input2.txt";
-const string path3 = "input3.txt";
+
 const vector<string> v =
 {
 	"Create a new point",
 	"Create a new line",
-	"Create a new triange",
+	"Create a new triangle",
 	"Create a new circle",
 	"Create a new polygon"
 };
@@ -45,7 +42,7 @@ void create_triangle()
 	cin >> C;
 
 	Triangle triangle(A, B, C);
-	output(triangle);
+	cout << triangle;
 }
 
 void create_circle()
