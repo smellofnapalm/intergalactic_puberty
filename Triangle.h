@@ -9,11 +9,15 @@ protected:
 
 	Point A, B, C;
 
-	double AB, BC, AC, S, P; 
-	double hA, hB, hC; //heights
-	double mA, mB, mC; //medians
-	double bA, bB, bC; //bisectors
-	double alpha, beta, gamma; //in A,B,C
+	double a, b, c, S, P; 
+	//altitudes
+	double hA, hB, hC; 
+	//medians
+	double mA, mB, mC; 
+	//bisectors
+	double bA, bB, bC; 
+	//in A, B, C
+	double alpha, beta, gamma; 
 	double r, R;
 
 	string type = "";
@@ -21,13 +25,11 @@ protected:
 public:
 
 	Triangle(double, double, double, double, double, double);
-	Triangle(const Point, const Point, const Point);
+	Triangle(const Point &, const Point &, const Point &);
 	Triangle(vector<Point>);
 
-	bool exist_check();
-
 	void set_area();
-	void set_perimetr();
+	void set_perimeter();
 	void set_sides();
 	void set_angles();
 	void set_heights();
@@ -39,7 +41,7 @@ public:
 
 	string get_type() const;
 	double get_area() const;
-	double get_perimetr() const;
+	double get_perimeter() const;
 	double get_R() const;
 	double get_r() const;
 
@@ -48,8 +50,12 @@ public:
 	vector<double> get_angles() const;
 	vector<double> get_heights() const;
 	vector<double> get_bisectors() const;
+	
+	bool Point_is_inside(const Point&);
+	
+	friend ostream& operator<<(ostream&, Triangle&);
 
 };
 
-void output(Triangle& triangle);
+bool rectangular_check(double Alpha, double Beta, double Gamma);
 void create_triangle();

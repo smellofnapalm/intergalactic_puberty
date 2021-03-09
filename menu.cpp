@@ -25,20 +25,20 @@ void create_line()
 {
 	Point p0, p1;
 	cout << "Enter two points of the line:\n";
-	in >> p0 >> p1;
+	cin >> p0 >> p1;
 	Line l = Line(p0, p1);
 	cout << l;
 }
 
 void create_triangle()
 {
-	cout << "You are creating the Triangle.";
+	cout << "You are creating the Triangle." << endl;
 	Point A, B, C;
-	cout << endl << "Input point А: ";
+	cout << "Input point A: ";
 	cin >> A;
-	cout << endl << "Input point B: ";
+	cout << "Input point B: ";
 	cin >> B;
-	cout << endl << "Input point C: ";
+	cout << "Input point C: ";
 	cin >> C;
 
 	Triangle triangle(A, B, C);
