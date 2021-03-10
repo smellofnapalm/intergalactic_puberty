@@ -1,4 +1,8 @@
 #include "Point.h"
+
+// Some special point we return if there is no such point
+const Point INF = { 1e9, 1e9 };
+
 class Line
 {
 protected:
@@ -31,13 +35,16 @@ public:
 
 	// If line(x, y): Ax + By + C = 0, than line[x] = y
 	double operator[] (double) const;
-
 	// <!> I don't know how to implement different ways
 	// <!> to actually input the line, so I've chosen the simplest
 	// <!> one for users - to enter two points
 	friend istream& operator>> (istream&, Line&);
-
 	friend ostream& operator<< (ostream&, const Line&);
+	friend bool operator==(const Line&, const Line&);
+
+	friend bool are_parallel(const Line&, const Line&);
+	friend Line make_parallel_line(const Line&, const Point&);
+	friend Point intersection(const Line&, const Line&);
 };
 
 class Ray : public Line
@@ -51,6 +58,8 @@ public:
 	Ray(const Point&, const Point&);
 
 	friend istream& operator>> (istream&, Ray&);
+
+	friend Point ray_intersection(const Ray&, const Ray&);
 };
 
 class Segment : public Line
@@ -70,4 +79,6 @@ public:
 	Point get_avr() const { return avr_point; }
 
 	friend istream& operator>> (istream&, Segment&);
+
+	friend Point segment_intersection(const Segment&, const Segment&);
 };

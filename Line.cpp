@@ -83,6 +83,30 @@ ostream& operator<<(ostream& out, const Line& l)
 	return out;
 }
 
+bool operator==(const Line& l1, const Line& l2)
+{
+	return l1.A == l2.A && l1.B == l2.B && l1.C == l2.C;
+}
+
+bool are_parallel(const Line& l1, const Line& l2)
+{
+	return l1.A == l2.A && l1.B == l2.B;
+}
+
+Line make_parallel_line(const Line& l, const Point& p)
+{
+	return Line(p, l.v);
+}
+
+Point intersection(const Line& l1, const Line& l2)
+{
+	double x, y;
+	if (l1 == l2 || are_parallel(l1, l2)) return { 1e9, 1e9 };
+	x = -(l1.C * l2.B - l2.C * l1.B) / (l1.A * l2.B - l2.A * l1.B);
+	y = -(l1.A * l2.C - l2.A * l1.C) / (l1.A * l2.B - l2.A * l1.B);
+	return { x, y };
+}
+
 istream& operator>>(istream& in, Ray& r)
 {
 	Point a, b;
@@ -91,12 +115,49 @@ istream& operator>>(istream& in, Ray& r)
 	return in;
 }
 
+Point ray_intersection(const Ray& r1, const Ray& r2)
+{
+	Point ans = intersection(r1, r2);
+	if (r1.p1.get_x() > r1.p0.get_x() && r2.p1.get_x() > r2.p0.get_x())
+	{
+		if (ans.get_x() >= max(r1.p0.get_x(), r2.p0.get_x()))
+			return ans;
+	}
+	else if (r1.p1.get_x() > r1.p0.get_x() && r2.p1.get_x() < r2.p0.get_x())
+	{
+		if (ans.get_x() >= r1.p0.get_x() && ans.get_y() <= r2.p0.get_x())
+			return ans;
+	}
+	else if (r1.p1.get_x() < r1.p0.get_x() && r2.p1.get_x() > r2.p0.get_x())
+	{
+		if (ans.get_x() <= r1.p0.get_x() && ans.get_y() >= r2.p0.get_x())
+			return ans;
+	}
+	else if (r1.p1.get_x() < r1.p0.get_x() && r2.p1.get_x() < r2.p0.get_x())
+	{
+		if (ans.get_x() <= min(r1.p0.get_x(), r2.p0.get_x()))
+			return ans;
+	}
+	return INF;
+}
+
 istream& operator>>(istream& in, Segment& s)
 {
 	Point a, b;
 	in >> a >> b;
 	s = Segment(a, b);
 	return in;
+}
+
+Point segment_intersection(const Segment& s1, const Segment& s2)
+{
+	Point ans = intersection(s1, s2);
+	double x = ans.get_x(), y = ans.get_y();
+	if (x >= min(s1.p0.get_x(), min(s1.p1.get_x(), min(s2.p0.get_x(), s2.p1.get_x()))) &&
+		x <= max(s1.p0.get_x(), min(s1.p1.get_x(), min(s2.p0.get_x(), s2.p1.get_x()))) &&
+		y >= min(s1.p0.get_y(), min(s1.p1.get_y(), min(s2.p0.get_y(), s2.p1.get_y()))) &&
+		y <= max(s1.p0.get_y(), min(s1.p1.get_y(), min(s2.p0.get_y(), s2.p1.get_y())))) return ans;
+	return INF;
 }
 
 Ray::Ray(const Line& l, double x0, double x1)
