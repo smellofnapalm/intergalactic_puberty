@@ -1,6 +1,7 @@
 ﻿#include "polygon.h"
 #include "Triangle.h"
 #include "Line.h"
+#include "Circle.h"
 
 const vector<string> v =
 {
@@ -47,7 +48,17 @@ void create_triangle()
 
 void create_circle()
 {
-	// TO DO
+	Point cent;
+	double r, S, L;
+	cout << "Enter the center of the circle" << endl;
+	cin >> cent;
+	cout << "Enter radius of the circle" << endl;
+	cin >> r;
+	Circle o(cent, r);
+	cout << o;
+	S = o.get_Square;
+	L = o.get_Lenght;
+	cout << "Circumference length=" << L << endl << "Area of ​​a circle=" << S << endl;
 }
 
 void create_polygon()

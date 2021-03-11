@@ -14,18 +14,22 @@ class Circle
 {
 private:
 	double _r = 0;
-	Point _a = {0, 0};
+	Point _centre = { 0, 0 };
 public:
 	Circle() {}
 	Circle(Point, double);
 
-	Point get_a() const;
+	Point get_center() const;
 	double get_r() const;
 
-	void set_a(Point);
+	void set_center(Point);
 	void set_r(double);
 
-	friend istream& operator>> (istream&, Point&);
-	friend ostream& operator<< (ostream&, const Point&);
+	double get_Lenght();
+	double get_Square();
+
+	friend istream& operator>> (istream&, Circle&);
+	friend ostream& operator<< (ostream&, const Circle&);
+	friend bool operator==(const Circle&, const Circle&);
 };
 
