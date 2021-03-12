@@ -22,6 +22,20 @@ double Circle::get_area()
 	return (PI * _r * _r);
 }
 
+double Circle::point_occurrence(const Point& t, const Circle& o)
+{
+	double temp;
+	temp = (t.get_x() - o._center.get_x()) * (t.get_x() - o._center.get_x()) + (t.get_y() - o._center.get_y()) * (t.get_y() - o._center.get_y()) - o.get_r() * o.get_r();
+	if (temp == 0)
+		cout << "The point lies on the circle" << endl;
+	else
+		if (temp > 0)
+			cout << "Point does not belong to circle" << endl;
+		else
+			cout << "The point lies inside the circle" << endl;
+	return 0.0;
+}
+
 Line Circle::make_tangent_line(const Circle& o, const Point& p)
 {
 	double x0 = o.get_center().get_x();
@@ -45,6 +59,7 @@ ostream& operator<< (ostream& out, const Circle& o)
 {
 	out << "Circle equation" << endl;
 	out << "(x-" << o._center.get_x() << ")^2 + (y-" << o._center.get_y() << ")^2 = " << o.get_r() * o.get_r() << endl;
+	out << "x^2 + y^2 + (" << -2 * o._center.get_x() << ")x + (" << -2 * o._center.get_y() << ")y +" << o._center.get_x() * o._center.get_x() + o._center.get_y() * o._center.get_y() - o.get_r() * o.get_r() << " = 0" << endl;
 	return out;
 }
 

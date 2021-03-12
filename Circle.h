@@ -30,6 +30,7 @@ public:
 
 	double get_length();
 	double get_area();
+	double point_occurrence(Point, Circle);
 
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);
