@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iomanip>
 #include "Point.h"
+#include "Line.h"
 
 using namespace std;
 
@@ -27,11 +28,14 @@ public:
 	void set_center(Point);
 	void set_r(double);
 
-	double get_Lenght();
-	double get_Square();
+	double get_length();
+	double get_area();
 
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);
 	friend bool operator==(const Circle&, const Circle&);
+
+	// Make a tangent line to a circle in a certain point
+	static Line make_tangent_line(const Circle&, const Point&);
 };
 

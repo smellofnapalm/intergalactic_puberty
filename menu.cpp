@@ -56,8 +56,8 @@ void create_circle()
 	cin >> r;
 	Circle o(cent, r);
 	cout << o;
-	S = o.get_Square();
-	L = o.get_Lenght();
+	S = o.get_area();
+	L = o.get_length();
 	cout << "Circumference length=" << L << endl << "Area of a circle=" << S << endl;
 }
 

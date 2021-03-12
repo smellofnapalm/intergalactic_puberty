@@ -63,6 +63,11 @@ double Line::operator[](double x0) const
 	return -(get_A()*x0 + get_C())/get_B();
 }
 
+bool Line::is_on(const Point& p)
+{
+	return A * p.get_x() + B * p.get_y() + C == 0.0;
+}
+
 istream& operator>>(istream& in, Line& l)
 {
 	Point a, b;
@@ -178,6 +183,12 @@ Ray::Ray(const Point& p0, const Point& p1)
 	(*this) = Ray(l, p0.get_x(), p1.get_y());
 }
 
+bool Ray::is_on(const Point& p)
+{
+	return (A*p.get_x() + B*p.get_y() + C == 0)
+	&& (p.get_x() - p0.get_x())*(p1.get_x() - p0.get_x()) >= 0;
+}
+
 Segment::Segment(const Line& l, double x0, double x1)
 {
 	A = l.get_A();
@@ -196,4 +207,10 @@ Segment::Segment(const Point& a, const Point& b)
 {
 	Line l = Line(a, b);
 	(*this) = Segment(l, a.get_x(), b.get_x());
+}
+
+bool Segment::is_on(const Point& p)
+{
+	return A*p.get_x() + B*p.get_y() + C == 0 &&
+	(p.get_x() - p0.get_x())*(p.get_x() - p1.get_x()) <= 0;
 }

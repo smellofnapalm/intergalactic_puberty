@@ -12,14 +12,24 @@ double Circle::get_r() const { return _r; }
 void Circle::set_center(Point center) { _center = center; }
 void Circle::set_r(double r) { _r = r; }
 
-double Circle::get_Lenght()
+double Circle::get_length()
 {
 	return (2 * PI * _r);
 }
 
-double Circle::get_Square()
+double Circle::get_area()
 {
 	return (PI * _r * _r);
+}
+
+Line Circle::make_tangent_line(const Circle& o, const Point& p)
+{
+	double x0 = o.get_center().get_x();
+	double y0 = o.get_center().get_y();
+	double x1 = p.get_x();
+	double y1 = p.get_y();
+	double r = o.get_r();
+	return Line(x1 - x0, y1 - y0, -x1*x0 - y1*y0 + x0*x0 + y0*y0 - r*r);
 }
 
 istream& operator>> (istream& in, Circle& o)

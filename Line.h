@@ -45,6 +45,9 @@ public:
 	friend bool are_parallel(const Line&, const Line&);
 	friend Line make_parallel_line(const Line&, const Point&);
 	friend Point intersection(const Line&, const Line&);
+
+	// Check if the Point on the Line
+	virtual bool is_on(const Point&);
 };
 
 class Ray : public Line
@@ -60,6 +63,9 @@ public:
 	friend istream& operator>> (istream&, Ray&);
 
 	friend Point ray_intersection(const Ray&, const Ray&);
+
+	// Check if the Point is on the Ray
+	bool is_on(const Point&) override;
 };
 
 class Segment : public Line
@@ -81,4 +87,7 @@ public:
 	friend istream& operator>> (istream&, Segment&);
 
 	friend Point segment_intersection(const Segment&, const Segment&);
+
+	// Check if the Point is on the Segment
+	bool is_on(const Point&) override;
 };
