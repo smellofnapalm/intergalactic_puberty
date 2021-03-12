@@ -10,11 +10,13 @@
 
 using namespace std;
 
+#define PI 3.14159265358979
+
 class Circle
 {
 private:
 	double _r = 0;
-	Point _centre = { 0, 0 };
+	Point _center = { 0, 0 };
 public:
 	Circle() {}
 	Circle(Point, double);

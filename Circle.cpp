@@ -14,12 +14,12 @@ void Circle::set_r(double r) { _r = r; }
 
 double Circle::get_Lenght()
 {
-	return 2 * PI * _r;
+	return (2 * PI * _r);
 }
 
 double Circle::get_Square()
 {
-	return PI* _r* _r;
+	return (PI * _r * _r);
 }
 
 istream& operator>> (istream& in, Circle& o)
@@ -27,17 +27,18 @@ istream& operator>> (istream& in, Circle& o)
 	Point center;
 	double r;
 	in >> center >> r;
-	o(center, r);
+	o = Circle(center, r);
 	return in;
 }
 
-ostream& operator<< (ostream&, const Circle& o)
+ostream& operator<< (ostream& out, const Circle& o)
 {
-	cout << "Circle equation" << endl;
-	cout << "(x-" << o._centre.get_x << ")^2 + (y-" << o._centre.get_y << ")^2 = " << o.get_r * o.get_r << "^2" << endl;
+	out << "Circle equation" << endl;
+	out << "(x-" << o._center.get_x() << ")^2 + (y-" << o._center.get_y() << ")^2 = " << o.get_r() * o.get_r() << endl;
+	return out;
 }
 
 bool operator==(const Circle& o1, const Circle& o2)
 {
-	return(o1._centre == o2._centre && o1._r == o2._r)
+	return(o1._center == o2._center && o1._r == o2._r);
 }
