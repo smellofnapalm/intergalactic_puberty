@@ -1,3 +1,4 @@
+#pragma once
 #include "Point.h"
 
 // Some special point we return if there is no such point
@@ -48,6 +49,15 @@ public:
 
 	// Check if the Point on the Line
 	virtual bool is_on(const Point&);
+
+	// Funcation value f(x, y) = Ax + By + C
+	double function_value(const Point&);
+
+	// Find in which half-plane the point lies (with respect to certain line)
+	// Returns 1 if the point is in the positive half-plane (where normal vector points)
+	// Return 0 if the point is on the line
+	// Return -1 if the point is in the negative half-plane
+	int check_halfplane(const Point&);
 };
 
 class Ray : public Line

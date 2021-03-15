@@ -51,11 +51,8 @@ public:
 	vector<double> get_heights() const;
 	vector<double> get_bisectors() const;
 	
-	bool Point_is_inside(const Point&);
+	bool point_is_inside(const Point&);
 	
 	friend ostream& operator<<(ostream&, Triangle&);
-
+	friend bool rectangular_check(double Alpha, double Beta, double Gamma);
 };
-
-bool rectangular_check(double Alpha, double Beta, double Gamma);
-void create_triangle();

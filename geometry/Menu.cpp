@@ -1,4 +1,4 @@
-﻿#include "polygon.h"
+﻿#include "Polygon.h"
 #include "Triangle.h"
 #include "Line.h"
 #include "Circle.h"

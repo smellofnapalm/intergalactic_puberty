@@ -36,8 +36,10 @@ public:
 	friend istream& operator>>(istream&, Polygon&);
 	friend ostream& operator<<(ostream&, const Polygon&);
 
+	// Shift polygon on some vector
 	friend Polygon operator+(const Polygon&, const Vector&);
 	friend Polygon operator-(const Polygon&, const Vector&);
 
-	void rotate_polygon(double,const Point&);
+	// Rotate polygon on some angle (counter-clockwise of course) with respect to certain point
+	void rotate_polygon(double, const Point&);
 };

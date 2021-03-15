@@ -1,4 +1,4 @@
-#include "polygon.h"
+#include "Polygon.h"
 
 // POLYGON FUNCTIONS
 

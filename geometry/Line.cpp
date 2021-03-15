@@ -68,6 +68,19 @@ bool Line::is_on(const Point& p)
 	return A * p.get_x() + B * p.get_y() + C == 0.0;
 }
 
+double Line::function_value(const Point& p)
+{
+	return A * p.get_x() + B * p.get_y() + C;
+}
+
+int Line::check_halfplane(const Point& p)
+{
+	double f = function_value(p);
+	if (f > 0) return 1;
+	if (f < 0) return -1;
+	return 0;
+}
+
 istream& operator>>(istream& in, Line& l)
 {
 	Point a, b;

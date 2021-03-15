@@ -92,6 +92,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,21 +141,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Circle.cpp" />
-    <ClCompile Include="..\Line.cpp" />
-    <ClCompile Include="..\menu.cpp" />
-    <ClCompile Include="..\Point.cpp" />
-    <ClCompile Include="..\polygon.cpp" />
-    <ClCompile Include="..\Triangle.cpp" />
+    <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Polygon.cpp" />
+    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Circle.h" />
-    <ClInclude Include="..\Line.h" />
-    <ClInclude Include="..\menu.hpp" />
-    <ClInclude Include="..\Point.h" />
-    <ClInclude Include="..\polygon.h" />
-    <ClInclude Include="..\Triangle.h" />
+    <ClInclude Include="Circle.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="Polygon.h" />
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

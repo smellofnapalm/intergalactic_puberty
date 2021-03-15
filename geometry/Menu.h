@@ -1,6 +1,6 @@
 #pragma once
 
-#include "polygon.h"
+#include "Polygon.h"
 const vector<string> v =
 {
 	"Create a new point",

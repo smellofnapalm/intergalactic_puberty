@@ -30,7 +30,10 @@ public:
 
 	double get_length();
 	double get_area();
-	double point_occurrence(Point, Circle);
+	// Returns -1 if the point is out of the circle
+	// Returns 0 if the point is on the circle
+	// Returns 1 if the point is inside the circle
+	int point_occurrence(const Point&, const Circle&);
 
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);

@@ -215,9 +215,9 @@ ostream& operator<<(ostream& out, Triangle& triangle)
 	return out;
 }
 
-bool Triangle::Point_is_inside(const Point& P)
+bool Triangle::point_is_inside(const Point& P)
 {
-	//проверка на знак
+	// Check the sign of the point with respect to every side
 	bool f1, f2, f3;
 
 	Point X = A;
