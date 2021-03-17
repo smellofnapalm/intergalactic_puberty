@@ -4,7 +4,7 @@
 // Some special point we return if there is no such point
 const Point INF = { 1e9, 1e9 };
 
-class Line
+class Line : public Object
 {
 protected:
 	// Normalized coef of the line

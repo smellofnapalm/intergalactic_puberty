@@ -79,6 +79,18 @@ Point& Point::operator=(const Point& p)
 	return *this;
 }
 
+void Point::draw() const
+{
+	glBegin(GL_POINT);
+
+	glColor3ub(get_color().R, get_color().G, get_color().B);
+	glPointSize(5);
+
+	glVertex2d(x, y);
+
+	glEnd();
+}
+
 // VECTOR FUNCTIONS
 
 double operator*(const Vector& a, const Vector& b)

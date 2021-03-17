@@ -10,9 +10,12 @@
 #include <iomanip>
 #include <conio.h>
 
+#include "Object.h"
+#include "glut/glut.h"
+
 using namespace std;
 
-class Point
+class Point : public Object
 {
 protected:
 	double x, y;
@@ -44,9 +47,11 @@ public:
 		return sqrt((a.get_x() - b.get_x()) * (a.get_x() - b.get_x()) +
 			(a.get_y() - b.get_y()) * (a.get_y() - b.get_y()));
 	}
+
+	void draw() const override;
 };
 
-class Vector : public Point
+class Vector : public Point, public Object
 {
 public:
 	Vector() {};
