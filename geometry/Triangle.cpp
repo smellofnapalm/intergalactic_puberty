@@ -230,3 +230,16 @@ bool Triangle::point_is_inside(const Point& P)
 
 	return f1 && f2 && f3;
 }
+
+void Triangle::draw() const
+{
+	glBegin(GL_TRIANGLE_FAN);
+
+	glColor3ub(get_color().R, get_color().G, get_color().B);
+	glVertex2d(A.get_x(), A.get_y());
+	glVertex2d(B.get_x(), B.get_y());
+	glVertex2d(C.get_x(), C.get_y());
+	glVertex2d(A.get_x(), A.get_y());
+
+	glEnd();
+}

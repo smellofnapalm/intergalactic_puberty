@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include "Object.h"
 #include "Point.h"
 #include "Line.h"
 
@@ -13,7 +14,7 @@ using namespace std;
 
 #define PI 3.14159265358979
 
-class Circle
+class Circle : public Object
 {
 private:
 	double _r = 0;
@@ -41,5 +42,7 @@ public:
 
 	// Make a tangent line to a circle in a certain point
 	static Line make_tangent_line(const Circle&, const Point&);
+
+	void draw() const override;
 };
 

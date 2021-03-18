@@ -41,6 +41,22 @@ Line Circle::make_tangent_line(const Circle& o, const Point& p)
 	return Line(x1 - x0, y1 - y0, -x1*x0 - y1*y0 + x0*x0 + y0*y0 - r*r);
 }
 
+void Circle::draw() const
+{
+	glBegin(GL_POLYGON);
+
+	glColor3ub(get_color().R, get_color().G, get_color().B);
+	int N = 500;
+	glVertex2f(_center.get_x(), _center.get_y());
+	for (int i = 0; i <= N; i++)
+	{
+		double angle = 2 * PI * i / N;
+		glVertex2f(_r * cos(angle) + _center.get_x(), _r * sin(angle) + _center.get_y());
+	}
+
+	glEnd();
+}
+
 istream& operator>> (istream& in, Circle& o)
 {
 	Point center;
@@ -54,7 +70,7 @@ ostream& operator<< (ostream& out, const Circle& o)
 {
 	out << "Circle equation" << endl;
 	out << "(x-" << o._center.get_x() << ")^2 + (y-" << o._center.get_y() << ")^2 = " << o.get_r() * o.get_r() << endl;
-	out << "x^2 + y^2 + (" << -2 * o._center.get_x() << ")x + (" << -2 * o._center.get_y() << ")y +" << o._center.get_x() * o._center.get_x() + o._center.get_y() * o._center.get_y() - o.get_r() * o.get_r() << " = 0" << endl;
+	out << "x^2 + y^2 + (" << -2 * o._center.get_x() << ")x + (" << -2 * o._center.get_y() << ")y + (" << o._center.get_x() * o._center.get_x() + o._center.get_y() * o._center.get_y() - o.get_r() * o.get_r() << ") = 0" << endl;
 	return out;
 }
 

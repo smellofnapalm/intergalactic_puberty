@@ -4,7 +4,7 @@ struct Color { int R = 0, G = 0, B = 0; };
 
 class Object
 {
-private:
+protected:
 	Color color = { 0, 0, 0 };
 public:
 	void set_color(const Color& c) { color = c; }

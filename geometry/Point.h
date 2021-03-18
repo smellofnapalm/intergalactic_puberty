@@ -51,7 +51,7 @@ public:
 	void draw() const override;
 };
 
-class Vector : public Point, public Object
+class Vector : public Point
 {
 public:
 	Vector() {};

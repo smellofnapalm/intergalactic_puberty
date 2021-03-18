@@ -2,7 +2,7 @@
 
 #include "Point.h"
 
-class Triangle
+class Triangle : public Object
 {
 
 protected:
@@ -55,4 +55,6 @@ public:
 	
 	friend ostream& operator<<(ostream&, Triangle&);
 	friend bool rectangular_check(double Alpha, double Beta, double Gamma);
+
+	void draw() const override;
 };

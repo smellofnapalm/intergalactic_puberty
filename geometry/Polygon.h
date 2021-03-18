@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class Polygon
+class Polygon : public Object
 {
 protected:
 	vector <Point> points;
@@ -42,4 +42,6 @@ public:
 
 	// Rotate polygon on some angle (counter-clockwise of course) with respect to certain point
 	void rotate_polygon(double, const Point&);
+
+	void draw() const override;
 };

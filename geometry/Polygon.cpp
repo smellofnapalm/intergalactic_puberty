@@ -109,13 +109,25 @@ void Polygon::rotate_polygon(double angle, const Point& p)
 		points[i] = Vector::rotate_vector(points[i], angle, p);
 }
 
+void Polygon::draw() const
+{
+	glBegin(GL_POLYGON);
+
+	glColor3ub(get_color().R, get_color().G, get_color().B);
+	for (int i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
+	glVertex2d(points[0].get_x(), points[0].get_y());
+
+	glEnd();
+}
+
 istream& operator>>(istream& in, Polygon& polygon)
 {
 	int n;
 	in >> n;
 	vector<Point> points;
 	points.resize(n);
-	for (int i = 0; i < n; i++) cin >> points[i];
+	for (int i = 0; i < n; i++) 
+		in >> points[i];
 	try
 	{
 		polygon = Polygon(points);
@@ -129,6 +141,10 @@ istream& operator>>(istream& in, Polygon& polygon)
 
 ostream& operator<<(ostream& out, const Polygon& polygon)
 {
+	// If it is empty
+	if (polygon.points.size() == 0) 
+		return out;
+
 	out << "The size of polygon is " << polygon.points.size() << endl;
 	out << "The points of the polygon:\n";
 	for (int i = 0; i < polygon.points.size(); i++) 

@@ -58,6 +58,8 @@ public:
 	// Return 0 if the point is on the line
 	// Return -1 if the point is in the negative half-plane
 	int check_halfplane(const Point&);
+
+	void draw() const override;
 };
 
 class Ray : public Line
@@ -76,6 +78,8 @@ public:
 
 	// Check if the Point is on the Ray
 	bool is_on(const Point&) override;
+
+	void draw() const override;
 };
 
 class Segment : public Line
@@ -100,4 +104,6 @@ public:
 
 	// Check if the Point is on the Segment
 	bool is_on(const Point&) override;
+
+	void draw() const override;
 };

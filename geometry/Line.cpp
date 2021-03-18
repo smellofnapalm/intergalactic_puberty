@@ -81,6 +81,17 @@ int Line::check_halfplane(const Point& p)
 	return 0;
 }
 
+void Line::draw() const
+{
+	glBegin(GL_LINE);
+
+	glColor3ub(get_color().R, get_color().G, get_color().B);
+	glVertex2d((p0 - 5000*v).get_x(), (p0 - 5000*v).get_y());
+	glVertex2d((p0 + 5000*v).get_x(), (p0 + 5000*v).get_y());
+
+	glEnd();
+}
+
 istream& operator>>(istream& in, Line& l)
 {
 	Point a, b;
@@ -202,6 +213,17 @@ bool Ray::is_on(const Point& p)
 	&& (p.get_x() - p0.get_x())*(p1.get_x() - p0.get_x()) >= 0;
 }
 
+void Ray::draw() const
+{
+	glBegin(GL_LINE);
+
+	glColor3ub(get_color().R, get_color().G, get_color().B);
+	glVertex2d(p0.get_x(), p0.get_y());
+	glVertex2d((p0 + 5000*v).get_x(), (p0 + 5000*v).get_y());
+
+	glEnd();
+}
+
 Segment::Segment(const Line& l, double x0, double x1)
 {
 	A = l.get_A();
@@ -226,4 +248,15 @@ bool Segment::is_on(const Point& p)
 {
 	return A*p.get_x() + B*p.get_y() + C == 0 &&
 	(p.get_x() - p0.get_x())*(p.get_x() - p1.get_x()) <= 0;
+}
+
+void Segment::draw() const
+{
+	glBegin(GL_LINE);
+
+	glColor3ub(get_color().R, get_color().G, get_color().B);
+	glVertex2d(p0.get_x(), p0.get_y());
+	glVertex2d(p1.get_x(), p1.get_y());
+
+	glEnd();
 }

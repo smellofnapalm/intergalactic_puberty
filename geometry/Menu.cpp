@@ -58,7 +58,7 @@ void create_circle()
 	cout << o;
 	S = o.get_area();
 	L = o.get_length();
-	cout << "Circumference length=" << L << endl << "Area of a circle=" << S << endl;
+	cout << "Circumference length = " << L << endl << "Area of a circle = " << S << endl;
 }
 
 void create_polygon()
