@@ -233,7 +233,7 @@ int Triangle::point_is_inside(const Point& P)
 	else return -1;
 }
 
-Segment& Triangle::create_midline(const string& s)
+Segment Triangle::create_midline(const string& s)
 {
 	if (s == "AB")
 	{
@@ -270,7 +270,7 @@ Segment& Triangle::create_midline(const string& s)
 	}
 }
 
-Segment& Triangle::create_altitude(const char& c)
+Segment Triangle::create_altitude(const char& c)
 {
 	if (c == 'A')
 	{
@@ -296,7 +296,7 @@ Segment& Triangle::create_altitude(const char& c)
 	{
 		Line AB(A, B);
 		Vector n = AB.get_n();
-		Line X(B, n);
+		Line X(B, n);	
 		Line H = make_parallel_line(X, C);
 		Point Z = intersection(X, H);
 		Segment L(C, Z);
@@ -304,7 +304,7 @@ Segment& Triangle::create_altitude(const char& c)
 	}
 }
 
-Segment& Triangle::create_bisector(const char& c)
+Segment Triangle::create_bisector(const char& c)
 {
 	if (c == 'A')
 	{
@@ -336,7 +336,7 @@ Segment& Triangle::create_bisector(const char& c)
 }
 
 //for polygon
-Segment& Triangle::create_bisector(const Point&)
+Segment Triangle::create_bisector(const Point&)
 {
 	double l = c / a;
 	//AX = l * XC

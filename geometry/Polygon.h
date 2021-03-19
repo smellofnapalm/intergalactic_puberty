@@ -46,7 +46,7 @@ public:
 	void rotate_polygon(double, const Point&);
 
 	int point_is_inside(const Point& P);
-	Segment& create_bisector(const Point& P);
+	Segment create_bisector(const Point& P);
 
 	void draw() const override;
 };

@@ -179,7 +179,7 @@ int Polygon::point_is_inside(const Point& P)
 	return 1;
 }
 
-Segment& Polygon::create_bisector(const Point& P) {
+Segment Polygon::create_bisector(const Point& P) {
 
 	int k;
 	for (int i = 0; i < points.size(); ++i)

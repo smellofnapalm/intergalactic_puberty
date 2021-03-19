@@ -57,10 +57,10 @@ public:
 	friend ostream& operator<<(ostream&, Triangle&);
 	friend bool rectangular_check(double Alpha, double Beta, double Gamma);
 
-	Segment& create_bisector(const Point&);
-	Segment& create_bisector(const char& c);
-	Segment& create_altitude(const char& c);
-	Segment& create_midline(const string& s);
+	Segment create_bisector(const Point&);
+	Segment create_bisector(const char& c);
+	Segment create_altitude(const char& c);
+	Segment create_midline(const string& s);
 
 	void draw() const override;
 };

@@ -39,6 +39,7 @@ public:
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);
 	friend bool operator==(const Circle&, const Circle&);
+	friend vector<Point> circles_intersection(const Circle&, const Circle&);
 
 	// Make a tangent line to a circle in a certain point
 	static Line make_tangent_line(const Circle&, const Point&);
@@ -48,4 +49,4 @@ public:
 	void draw() const override;
 };
 
-vector<Point> circles_intersection(const Circle& W1, const Circle& W2);
+
