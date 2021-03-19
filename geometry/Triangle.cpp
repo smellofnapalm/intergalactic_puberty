@@ -215,21 +215,137 @@ ostream& operator<<(ostream& out, Triangle& triangle)
 	return out;
 }
 
-bool Triangle::point_is_inside(const Point& P)
+int Triangle::point_is_inside(const Point& P)
 {
-	// Check the sign of the point with respect to every side
-	bool f1, f2, f3;
+	//проверка на знак
+	int f1, f2, f3;
 
 	Point X = A;
 	Point Y = B;
 	Point Z = C;
 
-	f1 = (X.get_x() - P.get_x()) * (Y.get_y() - X.get_y()) - (Y.get_x() - X.get_x()) * (X.get_y() - P.get_y()) >= 0;
-	f2 = (Y.get_x() - P.get_x()) * (Z.get_y() - Y.get_y()) - (Z.get_x() - Y.get_x()) * (Y.get_y() - P.get_y()) >= 0;
-	f3 = (Z.get_x() - P.get_x()) * (X.get_y() - Z.get_y()) - (X.get_x() - Z.get_x()) * (Z.get_y() - P.get_y()) >= 0;
+	f1 = (X.get_x() - P.get_x()) * (Y.get_y() - X.get_y()) - (Y.get_x() - X.get_x()) * (X.get_y() - P.get_y());
+	f2 = (Y.get_x() - P.get_x()) * (Z.get_y() - Y.get_y()) - (Z.get_x() - Y.get_x()) * (Y.get_y() - P.get_y());
+	f3 = (Z.get_x() - P.get_x()) * (X.get_y() - Z.get_y()) - (X.get_x() - Z.get_x()) * (Z.get_y() - P.get_y());
 
-	return f1 && f2 && f3;
+	if ((f1 == 0) || (f2 == 0) || (f3 == 0)) return 0;
+	else if ((f1 > 0 && f2 > 0 && f3 > 0) || (f1 < 0 && f2 < 0 && f3 < 0)) return 1;
+	else return -1;
 }
+
+Segment& Triangle::create_midline(const string& s)
+{
+	if (s == "AB")
+	{
+		double x1 = (A.get_x() + C.get_x()) / 2;
+		double y1 = (A.get_y() + C.get_y()) / 2;
+		Point X1(x1, y1);
+		double x2 = (B.get_x() + C.get_x()) / 2;
+		double y2 = (B.get_y() + C.get_y()) / 2;
+		Point X2(x2, y2);
+		Segment Z(X1, X2);
+		return Z;
+	}
+	if (s == "BC")
+	{
+		double x1 = (A.get_x() + B.get_x()) / 2;
+		double y1 = (A.get_y() + B.get_y()) / 2;
+		Point X1(x1, y1);
+		double x2 = (A.get_x() + C.get_x()) / 2;
+		double y2 = (A.get_y() + C.get_y()) / 2;
+		Point X2(x2, y2);
+		Segment Z(X1, X2);
+		return Z;
+	}
+	if (s == "AC")
+	{
+		double x1 = (B.get_x() + C.get_x()) / 2;
+		double y1 = (B.get_y() + C.get_y()) / 2;
+		Point X1(x1, y1);
+		double x2 = (A.get_x() + B.get_x()) / 2;
+		double y2 = (A.get_y() + B.get_y()) / 2;
+		Point X2(x2, y2);
+		Segment Z(X1, X2);
+		return Z;
+	}
+}
+
+Segment& Triangle::create_altitude(const char& c)
+{
+	if (c == 'A')
+	{
+		Line BC(B, C);
+		Vector n = BC.get_n();
+		Line X(B, n);
+		Line H = make_parallel_line(X, A);
+		Point Z = intersection(X, H);
+		Segment L(A, Z);
+		return L;
+	}
+	if (c == 'B')
+	{
+		Line AC(A, C);
+		Vector n = AC.get_n();
+		Line X(A, n);
+		Line H = make_parallel_line(X, B);
+		Point Z = intersection(X, H);
+		Segment L(B, Z);
+		return L;
+	}
+	if (c == 'C')
+	{
+		Line AB(A, B);
+		Vector n = AB.get_n();
+		Line X(B, n);
+		Line H = make_parallel_line(X, C);
+		Point Z = intersection(X, H);
+		Segment L(C, Z);
+		return L;
+	}
+}
+
+Segment& Triangle::create_bisector(const char& c)
+{
+	if (c == 'A')
+	{
+		double l = b / c;
+		//BX = l * XC
+		double x = (l * B.get_x() + C.get_x()) / (1 + l);
+		double y = (l * B.get_y() + C.get_y()) / (1 + l);
+		Segment L(A, Point(x, y));
+		return L;
+	}
+	if (c == 'B')
+	{
+		double l = c / a;
+		//AX = l * XC
+		double x = (l * C.get_x() + A.get_x()) / (1 + l);
+		double y = (l * C.get_y() + A.get_y()) / (1 + l);
+		Segment L(B, Point(x, y));
+		return L;
+	}
+	if (c == 'C')
+	{
+		double l = a / b;
+		//BX = l * XA
+		double x = (l * B.get_x() + A.get_x()) / (1 + l);
+		double y = (l * B.get_y() + A.get_y()) / (1 + l);
+		Segment L(C, Point(x, y));
+		return L;
+	}
+}
+
+//for polygon
+Segment& Triangle::create_bisector(const Point&)
+{
+	double l = c / a;
+	//AX = l * XC
+	double x = (l * C.get_x() + A.get_x()) / (1 + l);
+	double y = (l * C.get_y() + A.get_y()) / (1 + l);
+	Segment L(B, Point(x, y));
+	return L;
+}
+
 
 void Triangle::draw() const
 {

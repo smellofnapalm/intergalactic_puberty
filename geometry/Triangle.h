@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Point.h"
+#include "Line.h"
 
 class Triangle : public Object
 {
@@ -51,10 +52,15 @@ public:
 	vector<double> get_heights() const;
 	vector<double> get_bisectors() const;
 	
-	bool point_is_inside(const Point&);
+	int point_is_inside(const Point&);
 	
 	friend ostream& operator<<(ostream&, Triangle&);
 	friend bool rectangular_check(double Alpha, double Beta, double Gamma);
+
+	Segment& create_bisector(const Point&);
+	Segment& create_bisector(const char& c);
+	Segment& create_altitude(const char& c);
+	Segment& create_midline(const string& s);
 
 	void draw() const override;
 };
