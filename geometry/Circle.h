@@ -43,6 +43,9 @@ public:
 	// Make a tangent line to a circle in a certain point
 	static Line make_tangent_line(const Circle&, const Point&);
 
+	double s_to_point(const Point& A);
+
 	void draw() const override;
 };
 
+vector<Point> circles_intersection(const Circle& W1, const Circle& W2);

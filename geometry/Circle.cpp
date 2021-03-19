@@ -78,3 +78,85 @@ bool operator==(const Circle& o1, const Circle& o2)
 {
 	return(o1._center == o2._center && o1._r == o2._r);
 }
+
+double Circle::s_to_point(const Point& A)
+{
+	Point X = this->get_center();
+	double r = this->get_r();
+	double t = (A.get_x() - X.get_x()) * (A.get_x() - X.get_x()) + (A.get_y() - X.get_y()) * (A.get_y() - X.get_y()) - r * r;
+
+	if (t == 0) return 0;
+	else if (t > 0)  return (dist(A, X) - r);
+	else			 return (r - dist(A, X));
+}
+
+vector<Point> circles_intersection(const Circle& W1, const Circle& W2)
+{
+	Point O1 = W1.get_center();
+	Point O2 = W2.get_center();
+	double x1 = O1.get_x(),
+		x2 = O2.get_x(),
+		y1 = O1.get_y(),
+		y2 = O2.get_y(),
+		r1 = W1.get_r(),
+		r2 = W2.get_r(),
+		A = 2 * (x1 - x2),
+		B = 2 * (y1 - y2),
+		C = x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1 + r1 * r1 - r2 * r2;
+
+	if (A == 0 && B == 0)
+	{
+		//if no intersecton
+		if (r1 != r2) return {};
+	}
+
+	if (A != 0)
+	{
+		double a = (B * B) / (A * A) + 1;
+		double b = 2 * (B * C / (A * A) + (B * x1 / A) - y1);
+		double c = y1 * y1 - r1 * r1 + pow(-(C / A) - x1, 2);
+
+		double D = b * b - 4 * a * c;
+		if (D < 0) return {};
+		else if (D == 0)
+		{
+			double y = -b / (2 * a);
+			double x = -1 / A * (B * y + C);
+			return { Point(x,y) };
+		}
+		else
+		{
+			double x01, y01, x02, y02;
+			y01 = ((-b + sqrt(D)) / (2 * a));
+			y02 = ((-b - sqrt(D)) / (2 * a));
+			x01 = -1 / A * (B * y01 + C);
+			x02 = -1 / A * (B * y02 + C);
+			return { Point(x01, y01), Point(x02, y02) };
+		}
+	}
+	else if (B != 0)
+	{
+
+		double a = (A * A) / (B * B) + 1;
+		double b = 2 * ((A * C) / (B * B) + (A * y1) / B - x1);
+		double c = x1 * x1 - r1 * r1 + pow(-(C / B) - y1, 2);
+
+		double D = b * b - 4 * a * c;
+		if (D < 0) return {};
+		else if (D == 0)
+		{
+			double y = -b / (2 * a);
+			double x = -1 / B * (A * y + C);
+			return { Point(x,y) };
+		}
+		else
+		{
+			double x01, y01, x02, y02;
+			x01 = ((-b + sqrt(D)) / (2 * a));
+			x02 = ((-b - sqrt(D)) / (2 * a));
+			y01 = -1 / B * (A * x01 + C);
+			y02 = -1 / B * (A * x02 + C);
+			return { Point(x01, y01), Point(x02, y02) };
+		}
+	}
+}
