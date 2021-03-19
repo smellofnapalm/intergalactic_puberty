@@ -9,6 +9,8 @@
 #include <iomanip>
 #include <conio.h>
 #include "Point.h"
+#include "Line.h"
+#include "Triangle.h"
 
 using namespace std;
 
@@ -42,6 +44,9 @@ public:
 
 	// Rotate polygon on some angle (counter-clockwise of course) with respect to certain point
 	void rotate_polygon(double, const Point&);
+
+	int point_is_inside(const Point& P);
+	Segment& create_bisector(const Point& P);
 
 	void draw() const override;
 };

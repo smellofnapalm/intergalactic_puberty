@@ -159,3 +159,48 @@ ostream& operator<<(ostream& out, const Polygon& polygon)
 	return out;
 }
 
+int Polygon::point_is_inside(const Point& P)
+{
+	bool up = false, down = false;
+	double f;
+
+	for (int i = 0; i <= points.size(); ++i)
+	{
+		if (i == points.size())
+			f = (points[i].get_x() - P.get_x() * (points[0].get_y() - points[i].get_y())) - ((points[0].get_x() - points[i].get_x()) * (points[i].get_y() - P.get_y()));
+		else
+			f = (points[i].get_x() - P.get_x() * (points[i + 1].get_y() - points[i].get_y())) - ((points[i + 1].get_x() - points[i].get_x()) * (points[i].get_y() - P.get_y()));
+
+		if ((f > 0 && down) || (f < 0 && up)) return -1;
+		if (f == 0) return 0;
+		if (f > 0 && !up) up = true;
+		if (f < 0 && !down) down = true;
+	}
+	return 1;
+}
+
+Segment& Polygon::create_bisector(const Point& P) {
+
+	int k;
+	for (int i = 0; i < points.size(); ++i)
+	{
+		if (P == points[i]) k = i;
+		break;
+	}
+
+	if (k == 0)
+	{
+		Triangle L(points[points.size() - 1], points[0], points[1]);
+		return L.create_bisector(P);
+	}
+	else if (k == points.size() - 1)
+	{
+		Triangle L(points[k - 1], points[k], points[0]);
+		return L.create_bisector(P);
+	}
+	else
+	{
+		Triangle L(points[k - 1], points[k], points[k + 1]);
+		return L.create_bisector(P);
+	}
+}
