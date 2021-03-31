@@ -1,43 +1,37 @@
 #include "Triangle.h"
 
+bool points_check(const Point& A, const Point& B, const Point& C)
+{
+	Line L(A, B);
+	// Check for C in AB Line
+	return L[C.get_x()] == C.get_y();
+}
+
 Triangle::Triangle(double x1, double y1, double x2, double y2, double x3, double y3) 
 {
 	A = Point(x1, y1);
 	B = Point(x2, y2);
 	C = Point(x3, y3);
-
-	set_sides();
-	set_perimeter();
-	set_area();
-	set_r();
-	set_R();
-	set_angles();
-	set_type();
-	set_medians();
-	set_bisectors();
-	set_heights();
+	init();
 }
 
 Triangle::Triangle(const Point &X, const Point &Y, const Point &Z) 
 {
-	A = X, B = Y, C = Z;
-
-	set_sides();
-	set_perimeter();
-	set_area();
-	set_r();
-	set_R();
-	set_angles();
-	set_type();
-	set_medians();
-	set_bisectors();
-	set_heights();
+	A = X, 
+	B = Y, 
+	C = Z;
+	init();
 }
 
 Triangle::Triangle(vector<Point> Arr) 
 {
-	A = Arr[0], B = Arr[1], C = Arr[2];
+	A = Arr[0],
+	B = Arr[1], 
+	C = Arr[2];
+	init();
+}
 
+void Triangle::init() {
 	set_sides();
 	set_perimeter();
 	set_area();
@@ -112,6 +106,7 @@ void Triangle::set_medians()
 bool rectangular_check(double Alpha, double Beta, double Gamma) 
 {
 	const double EPS = 1e-4;
+	// Check for angle ~ 90 degrees
 	return abs(max(max(Alpha, Beta), Gamma) - 90) < EPS;
 }
 
@@ -165,47 +160,54 @@ string Triangle::get_type() const
 
 vector<double> Triangle::get_sides() const
 {
-	vector<double> Arr = { c, b, a };
-	return Arr;
+	// Returns sides AB, AC, BC
+	vector<double> arr = { c, b, a };
+	return arr;
 }
 
 vector<double> Triangle::get_angles() const 
 {
-	vector<double> Arr = { alpha, beta, gamma };
-	return Arr;
+	// Angles in points A, B, C of triangle
+	vector<double> arr = { alpha, beta, gamma };
+	return arr;
 }
 
-vector<double> Triangle::get_heights() const 
+vector<double> Triangle::get_altitudes() const 
 {
-	vector<double> Arr = { hA, hB, hC };
-	return Arr;
+	// Return length of altitude (height) from point A, B, C 
+	vector<double> arr = { hA, hB, hC };
+	return arr;
 }
 
 vector<double> Triangle::get_bisectors() const
 {
-	vector<double> Arr = { bA, bB, bC };
-	return Arr;
+	// Return length of bisector from point A, B, C
+	vector<double> arr = { bA, bB, bC };
+	return arr;
 }
 
 vector<double> Triangle::get_medians() const
 {
-	vector<double> Arr = { mA, mB, mC };
-	return Arr;
+	// Return length of median from point A, B, C
+	vector<double> arr = { mA, mB, mC };
+	return arr;
 }
 
 ostream& operator<<(ostream& out, Triangle& triangle) 
 {
+	// Printing step by step...
+	vector<double> arr;
 	out << fixed << setprecision(2);
 	out << "Type is: " << triangle.get_type() << endl;
-	vector<double> arr = triangle.get_sides();
+	arr = triangle.get_sides();
 	out << "AB = " << arr[0] << " AC = " << arr[1] << " BC = " << arr[2] << endl;
 	arr = triangle.get_angles();
-	out << "Angles in A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
+	out << "Angle in A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
 	out << "Perimeter = " << triangle.get_perimeter() << endl;
 	out << "Area = " << triangle.get_area() << endl;
 	out << "R = " << triangle.get_R() << endl;
 	out << "r = " << triangle.get_r() << endl;
-	arr = triangle.get_heights();
+	arr = triangle.get_altitudes();
 	out << "Length of Altitude from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
 	arr = triangle.get_bisectors();
 	out << "Length of Bisector from A = " << arr[0] << " B = " << arr[1] << " C = " << arr[2] << endl;
@@ -215,137 +217,112 @@ ostream& operator<<(ostream& out, Triangle& triangle)
 	return out;
 }
 
-int Triangle::point_is_inside(const Point& P)
+int Triangle::point_is_inside(const Point& p)
 {
-	//проверка на знак
+	/*
+	f are results of vector products 
+	If fi = 0 we check if points is on the side of our triangle
+	If all f > 0 or < 0 then our point is inside the object
+	Else points is outside
+	*/
 	int f1, f2, f3;
 
-	Point X = A;
-	Point Y = B;
-	Point Z = C;
+	f1 = (A.get_x() - p.get_x()) * (B.get_y() - A.get_y()) - (B.get_x() - A.get_x()) * (A.get_y() - p.get_y());
+	f2 = (B.get_x() - p.get_x()) * (C.get_y() - B.get_y()) - (C.get_x() - B.get_x()) * (B.get_y() - p.get_y());
+	f3 = (C.get_x() - p.get_x()) * (A.get_y() - C.get_y()) - (A.get_x() - C.get_x()) * (C.get_y() - p.get_y());
 
-	f1 = (X.get_x() - P.get_x()) * (Y.get_y() - X.get_y()) - (Y.get_x() - X.get_x()) * (X.get_y() - P.get_y());
-	f2 = (Y.get_x() - P.get_x()) * (Z.get_y() - Y.get_y()) - (Z.get_x() - Y.get_x()) * (Y.get_y() - P.get_y());
-	f3 = (Z.get_x() - P.get_x()) * (X.get_y() - Z.get_y()) - (X.get_x() - Z.get_x()) * (Z.get_y() - P.get_y());
+	if (f1 == 0) 
+	{
+		Segment s(A, B);
+		if (s.is_on(p)) {
+			return 0;
+		}
+	}
+	if (f2 == 0) 
+	{
+		Segment s(B, C);
+		if (s.is_on(p)) {
+			return 0;
+		}
+	}
+	if (f3 == 0) 
+	{
+		Segment s(A, C);
+		if (s.is_on(p)) {
+			return 0;
+		}
+	}
 
-	if ((f1 == 0) || (f2 == 0) || (f3 == 0)) return 0;
 	else if ((f1 > 0 && f2 > 0 && f3 > 0) || (f1 < 0 && f2 < 0 && f3 < 0)) return 1;
 	else return -1;
 }
 
-Segment Triangle::create_midline(const string& s)
+Triangle Triangle::triangle_point_set1(Point& n, Point& k, Point& m)
 {
-	if (s == "AB")
-	{
-		double x1 = (A.get_x() + C.get_x()) / 2;
-		double y1 = (A.get_y() + C.get_y()) / 2;
-		Point X1(x1, y1);
-		double x2 = (B.get_x() + C.get_x()) / 2;
-		double y2 = (B.get_y() + C.get_y()) / 2;
-		Point X2(x2, y2);
-		Segment Z(X1, X2);
-		return Z;
-	}
-	if (s == "BC")
-	{
-		double x1 = (A.get_x() + B.get_x()) / 2;
-		double y1 = (A.get_y() + B.get_y()) / 2;
-		Point X1(x1, y1);
-		double x2 = (A.get_x() + C.get_x()) / 2;
-		double y2 = (A.get_y() + C.get_y()) / 2;
-		Point X2(x2, y2);
-		Segment Z(X1, X2);
-		return Z;
-	}
-	if (s == "AC")
-	{
-		double x1 = (B.get_x() + C.get_x()) / 2;
-		double y1 = (B.get_y() + C.get_y()) / 2;
-		Point X1(x1, y1);
-		double x2 = (A.get_x() + B.get_x()) / 2;
-		double y2 = (A.get_y() + B.get_y()) / 2;
-		Point X2(x2, y2);
-		Segment Z(X1, X2);
-		return Z;
-	}
+	if (k == A) n = B, m = C;
+	else if (k == B) n = A, m = C;
+	else if (k == C) n = A, m = B;
+	return Triangle(n, k, m);
 }
 
-Segment Triangle::create_altitude(const char& c)
+Triangle Triangle::triangle_point_set2(Point& n, Point& k, Point& m)
 {
-	if (c == 'A')
-	{
-		Line BC(B, C);
-		Vector n = BC.get_n();
-		Line X(B, n);
-		Line H = make_parallel_line(X, A);
-		Point Z = intersection(X, H);
-		Segment L(A, Z);
-		return L;
-	}
-	if (c == 'B')
-	{
-		Line AC(A, C);
-		Vector n = AC.get_n();
-		Line X(A, n);
-		Line H = make_parallel_line(X, B);
-		Point Z = intersection(X, H);
-		Segment L(B, Z);
-		return L;
-	}
-	if (c == 'C')
-	{
-		Line AB(A, B);
-		Vector n = AB.get_n();
-		Line X(B, n);	
-		Line H = make_parallel_line(X, C);
-		Point Z = intersection(X, H);
-		Segment L(C, Z);
-		return L;
-	}
+	if (n == A && k == B || n == B && k == A) m = C;
+	else if (n == A && k == C || n == C && k == A) m = B;
+	else if (n == B && k == C || n == C && k == B) m = A;
+	return Triangle(n, k, m);
 }
 
-Segment Triangle::create_bisector(const char& c)
+Segment Triangle::create_midline(const Point& p1, const Point& p2)
 {
-	if (c == 'A')
-	{
-		double l = b / c;
-		//BX = l * XC
-		double x = (l * B.get_x() + C.get_x()) / (1 + l);
-		double y = (l * B.get_y() + C.get_y()) / (1 + l);
-		Segment L(A, Point(x, y));
-		return L;
-	}
-	if (c == 'B')
-	{
-		double l = c / a;
-		//AX = l * XC
-		double x = (l * C.get_x() + A.get_x()) / (1 + l);
-		double y = (l * C.get_y() + A.get_y()) / (1 + l);
-		Segment L(B, Point(x, y));
-		return L;
-	}
-	if (c == 'C')
-	{
-		double l = a / b;
-		//BX = l * XA
-		double x = (l * B.get_x() + A.get_x()) / (1 + l);
-		double y = (l * B.get_y() + A.get_y()) / (1 + l);
-		Segment L(C, Point(x, y));
-		return L;
-	}
+	// Same triangle but points will be shifted for formula
+	Point n, k, m;
+	n = p1, k = p2;
+	Triangle t = triangle_point_set2(n, k, m);
+	
+	// Calculate the equation of middle line BC
+	double x1 = (t.A.get_x() + t.B.get_x()) / 2;
+	double y1 = (t.A.get_y() + t.B.get_y()) / 2;
+	Point X1(x1, y1);
+	double x2 = (t.A.get_x() + t.C.get_x()) / 2;
+	double y2 = (t.A.get_y() + t.C.get_y()) / 2;
+	Point X2(x2, y2);
+	Segment Z(X1, X2);
+	return Z;
 }
 
-//for polygon
-Segment Triangle::create_bisector(const Point&)
+Segment Triangle::create_altitude(const Point& p)
 {
-	double l = c / a;
-	//AX = l * XC
-	double x = (l * C.get_x() + A.get_x()) / (1 + l);
-	double y = (l * C.get_y() + A.get_y()) / (1 + l);
-	Segment L(B, Point(x, y));
+	// Same triangle but points will be shifted for formula
+	Point n, k, m;
+	k = p;
+	Triangle t = triangle_point_set1(n, k, m);
+
+	// Calculate the equation of altitude from B
+	Line AC(t.A, t.C);
+	Vector np = AC.get_n();
+	Line X(t.A, np);
+	Line H = make_parallel_line(X, t.B);
+	Point Z = intersection(AC, H);
+	Segment L(t.B, Z);
 	return L;
 }
 
+Ray Triangle::create_bisector(const Point& p)
+{
+	// Same triangle but points will be shifted for formula
+	Point n, k, m;
+	k = p;
+	Triangle t = triangle_point_set1(n, k, m);
+
+	// Calculate the equation of bisector from B
+	double l = t.c / t.a;
+	//AX = l * XC
+	double x = (l * t.C.get_x() + t.A.get_x()) / (1 + l);
+	double y = (l * t.C.get_y() + t.A.get_y()) / (1 + l);
+	Ray L(t.B, Point(x, y));
+	return L;
+}
 
 void Triangle::draw() const
 {

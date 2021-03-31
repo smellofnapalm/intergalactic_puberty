@@ -44,7 +44,8 @@ public:
 	// Make a tangent line to a circle in a certain point
 	static Line make_tangent_line(const Circle&, const Point&);
 
-	double s_to_point(const Point& A);
+	// Calculate the distance from given point to circle
+	double distance_to_point(const Point& A);
 
 	void draw() const override;
 };

@@ -159,48 +159,64 @@ ostream& operator<<(ostream& out, const Polygon& polygon)
 	return out;
 }
 
-int Polygon::point_is_inside(const Point& P)
+int Polygon::point_is_inside(const Point& p)
 {
-	bool up = false, down = false;
+	/*
+	Every f > 0 or f < 0 => inside
+	If exist !f => outside
+	If f == 0 && on side => on side
+	*/
+
+	bool poz = false, neg = false;
 	double f;
 
 	for (int i = 0; i <= points.size(); ++i)
 	{
 		if (i == points.size())
-			f = (points[i].get_x() - P.get_x() * (points[0].get_y() - points[i].get_y())) - ((points[0].get_x() - points[i].get_x()) * (points[i].get_y() - P.get_y()));
+			f = (points[i].get_x() - p.get_x() * (points[0].get_y() - points[i].get_y())) - ((points[0].get_x() - points[i].get_x()) * (points[i].get_y() - p.get_y()));
 		else
-			f = (points[i].get_x() - P.get_x() * (points[i + 1].get_y() - points[i].get_y())) - ((points[i + 1].get_x() - points[i].get_x()) * (points[i].get_y() - P.get_y()));
+			f = (points[i].get_x() - p.get_x() * (points[i + 1].get_y() - points[i].get_y())) - ((points[i + 1].get_x() - points[i].get_x()) * (points[i].get_y() - p.get_y()));
 
-		if ((f > 0 && down) || (f < 0 && up)) return -1;
-		if (f == 0) return 0;
-		if (f > 0 && !up) up = true;
-		if (f < 0 && !down) down = true;
+		if ((f > 0 && neg) || (f < 0 && poz)) return -1;
+		if (f == 0) {
+			int j = 0;
+			if (i != points.size()) {
+				j = i + 1;
+			}
+			Segment s(points[i], points[j]);
+			if (s.is_on(p) == 1) {
+				return 0;
+			}
+		}
+		if (f > 0 && !poz) poz = true;
+		if (f < 0 && !neg) neg = true;
 	}
 	return 1;
 }
 
-Segment Polygon::create_bisector(const Point& P) {
-
-	int k;
+Ray Polygon::create_bisector(const Point& p) 
+{
+	// Check for point p in polygon
+	int k = -1;
 	for (int i = 0; i < points.size(); ++i)
 	{
-		if (P == points[i]) k = i;
+		if (p == points[i]) k = i;
 		break;
 	}
-
+	
 	if (k == 0)
 	{
-		Triangle L(points[points.size() - 1], points[0], points[1]);
-		return L.create_bisector(P);
+		Triangle t(points[points.size() - 1], points[0], points[1]);
+		return t.create_bisector(p);
 	}
 	else if (k == points.size() - 1)
 	{
-		Triangle L(points[k - 1], points[k], points[0]);
-		return L.create_bisector(P);
+		Triangle t(points[k - 1], points[k], points[0]);
+		return t.create_bisector(p);
 	}
 	else
 	{
-		Triangle L(points[k - 1], points[k], points[k + 1]);
-		return L.create_bisector(P);
-	}
+		Triangle t(points[k - 1], points[k], points[k + 1]);
+		return t.create_bisector(p);
+	}	
 }

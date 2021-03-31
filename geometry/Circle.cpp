@@ -79,34 +79,49 @@ bool operator==(const Circle& o1, const Circle& o2)
 	return(o1._center == o2._center && o1._r == o2._r);
 }
 
-double Circle::s_to_point(const Point& A)
+double Circle::distance_to_point(const Point& p)
 {
-	Point X = this->get_center();
+	/*
+	If point is inside - radius minus distance from point to the center
+	If point is outside - distance from point to the center minus radius
+	*/
+	Point  c = this->get_center();
 	double r = this->get_r();
-	double t = (A.get_x() - X.get_x()) * (A.get_x() - X.get_x()) + (A.get_y() - X.get_y()) * (A.get_y() - X.get_y()) - r * r;
+	double t = (p.get_x() - c.get_x()) * (p.get_x() - c.get_x()) + (p.get_y() - c.get_y()) * (p.get_y() - c.get_y()) - r * r;
 
-	if (t == 0) return 0;
-	else if (t > 0)  return (dist(A, X) - r);
-	else			 return (r - dist(A, X));
+	     if (t == 0) return 0;
+	else if (t > 0)  return (dist(p, c) - r);
+	else			 return (r - dist(p, c));
 }
 
-vector<Point> circles_intersection(const Circle& W1, const Circle& W2)
+vector<Point> circles_intersection(const Circle& o1, const Circle& o2)
 {
-	Point O1 = W1.get_center();
-	Point O2 = W2.get_center();
-	double x1 = O1.get_x(),
-		x2 = O2.get_x(),
-		y1 = O1.get_y(),
-		y2 = O2.get_y(),
-		r1 = W1.get_r(),
-		r2 = W2.get_r(),
-		A = 2 * (x1 - x2),
-		B = 2 * (y1 - y2),
-		C = x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1 + r1 * r1 - r2 * r2;
+	/*
+	We solve the system of equations of a straight line and a circle, 
+	obtained by subtracting the second circle from the first.
+	A,B,C - Line ñoefficients
+	xi, yi - coordinates of centre of i circle (i = 1,2)
+	There are 3 cases: if A = B = 0, then we check the radiuses, because (x1,y1) == (x2,y2)
+	if A != 0 we can divide on it and put in the system. Then we solve the quadratic equation where can be 0-2 roots.
+	So then there are 0-2 points of intersection.
+	the same way if B != 0
+	You can solve the system on your way by creating substitutions and then have big formulas for a,b,c as example.
+	*/
+	Point  c1 = o1.get_center();
+	Point  c2 = o2.get_center();
+	double x1 = c1.get_x(),
+		   x2 = c2.get_x(),
+		   y1 = c1.get_y(),
+		   y2 = c2.get_y(),
+		   r1 = o1.get_r(),
+		   r2 = o2.get_r(),
+		   A = 2 * (x1 - x2),
+		   B = 2 * (y1 - y2),
+		   C = x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1 + r1 * r1 - r2 * r2;
 
 	if (A == 0 && B == 0)
 	{
-		//if no intersecton
+		// If no intersecton
 		if (r1 != r2) return {};
 	}
 
@@ -117,13 +132,16 @@ vector<Point> circles_intersection(const Circle& W1, const Circle& W2)
 		double c = y1 * y1 - r1 * r1 + pow(-(C / A) - x1, 2);
 
 		double D = b * b - 4 * a * c;
+		// No roots
 		if (D < 0) return {};
+		// One root
 		else if (D == 0)
 		{
 			double y = -b / (2 * a);
 			double x = -1 / A * (B * y + C);
 			return { Point(x,y) };
 		}
+		// Two roots
 		else
 		{
 			double x01, y01, x02, y02;
@@ -134,6 +152,7 @@ vector<Point> circles_intersection(const Circle& W1, const Circle& W2)
 			return { Point(x01, y01), Point(x02, y02) };
 		}
 	}
+
 	else if (B != 0)
 	{
 
@@ -142,13 +161,16 @@ vector<Point> circles_intersection(const Circle& W1, const Circle& W2)
 		double c = x1 * x1 - r1 * r1 + pow(-(C / B) - y1, 2);
 
 		double D = b * b - 4 * a * c;
+		// No roots
 		if (D < 0) return {};
+		// One root
 		else if (D == 0)
 		{
 			double y = -b / (2 * a);
 			double x = -1 / B * (A * y + C);
 			return { Point(x,y) };
 		}
+		// Two roots
 		else
 		{
 			double x01, y01, x02, y02;

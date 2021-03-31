@@ -42,6 +42,12 @@ void create_triangle()
 	cout << "Input point C: ";
 	cin >> C;
 
+	if (points_check(A, B, C))
+	{
+		cout << endl << "ERROR: THREE DOTS ON THE SAME LINE IS ILLEGAL!" << endl;
+		return;
+	}
+
 	Triangle triangle(A, B, C);
 	cout << triangle;
 }

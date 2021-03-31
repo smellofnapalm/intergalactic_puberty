@@ -45,8 +45,10 @@ public:
 	// Rotate polygon on some angle (counter-clockwise of course) with respect to certain point
 	void rotate_polygon(double, const Point&);
 
-	int point_is_inside(const Point& P);
-	Segment create_bisector(const Point& P);
+	// Check if 1 - inside 0 - on or -1 - outside
+	int point_is_inside(const Point&);
+	// Return bisector from given point
+	Ray create_bisector(const Point&);
 
 	void draw() const override;
 };
