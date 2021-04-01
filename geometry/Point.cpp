@@ -72,6 +72,12 @@ Point operator-(const Point& a)
 	return Point(-a.x, -a.y);
 }
 
+double dist(const Point& a, const Point& b)
+{
+	return sqrt((a.get_x() - b.get_x()) * (a.get_x() - b.get_x()) +
+		(a.get_y() - b.get_y()) * (a.get_y() - b.get_y()));
+}
+
 Point& Point::operator=(const Point& p)
 {
 	this->x = p.x;
@@ -103,7 +109,7 @@ double vector_product(const Vector& a, const Vector& b)
 	return a.get_x() * b.get_y() - a.get_y() * b.get_x();
 }
 
-Vector Vector::rotate_vector(const Vector& v, double angle, const Point& center)
+Vector Vector::rotate(const Vector& v, double angle, const Point& center)
 {
 	Vector new_v = v;
 	new_v = new_v - center;
@@ -131,7 +137,7 @@ Vector::Vector(const Point& p)
 	this->set_y(p.get_y());
 }
 
-double Vector::length()
+double Vector::length() const
 {
 	return sqrt(x*x + y*y);
 }

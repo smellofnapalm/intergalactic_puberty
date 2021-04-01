@@ -92,6 +92,12 @@ void create_polygon()
 
 int print_menu(vector<string> mas = v)
 {
+	const int ENTER = 224;
+	const int UP = 72;
+	const int DOWN = 80;
+	const int ESC = 27;
+	const int CR = 13;
+
 	int N = mas.size();
 	int key = 0, move;
 	while (true)
@@ -108,22 +114,22 @@ int print_menu(vector<string> mas = v)
 		cout << '\n';
 
 		move = _getch();
-		if (move == 27)
+		if (move == ESC)
 		{
 			system("cls");
 			return N + 1;
 		}
-		if (move == 224)
+		if (move == ENTER)
 			move = _getch();
 
-		if (move == 13)
+		if (move == CR)
 		{
 			system("cls");
 			return key;
 		}
-		else if (move == 72)
+		else if (move == UP)
 			key = ((key - 1) % N + N) % N;
-		else if (move == 80)
+		else if (move == DOWN)
 			key = (key + 1) % N;
 		system("cls");
 	}

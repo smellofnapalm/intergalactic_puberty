@@ -1,9 +1,6 @@
 #pragma once
 #include "Point.h"
 
-// Some special point we return if there is no such point
-const Point INF = { 1e9, 1e9 };
-
 class Line : public Object
 {
 protected:
@@ -15,17 +12,17 @@ protected:
 
 	// Normalized (of length 1) directing vector (v) and normal vector (n)
 	Vector v = { 1, 0 }, n = {0, 1};
+
+	// They do init, not set, that's why they are private
+	void set_p0();
+	void set_v();
+	void set_n();
+	void set_coef();
 public:
 	Line() {}
 	Line(double, double, double);
 	Line(const Point&, const Point&);
 	Line(const Point&, const Vector&);
-
-	void set_p0(double);
-	void set_p0();
-	void set_v();
-	void set_n();
-	void set_coef();
 
 	double get_A() const { return A; };
 	double get_B() const { return B; };
@@ -48,7 +45,7 @@ public:
 	friend Point intersection(const Line&, const Line&);
 
 	// Check if the Point on the Line
-	virtual bool is_on(const Point&);
+	virtual bool is_on(const Point&) const;
 
 	// Funcation value f(x, y) = Ax + By + C
 	double function_value(const Point&);
@@ -69,15 +66,16 @@ protected:
 	Point p1 = { 0, 0 };
 public:
 	Ray() {}
-	Ray(const Line&, double, double);
+	Ray(const Line&, const Point&, const Point&);
 	Ray(const Point&, const Point&);
 
 	friend istream& operator>> (istream&, Ray&);
+	friend ostream& operator<< (ostream&, const Ray&);
 
 	friend Point ray_intersection(const Ray&, const Ray&);
 
 	// Check if the Point is on the Ray
-	bool is_on(const Point&) override;
+	bool is_on(const Point&) const override;
 
 	void draw() const override;
 };
@@ -92,18 +90,19 @@ protected:
 	Point avr_point = { 0, 0 };
 public:
 	Segment() {}
-	Segment(const Line&, double, double);
+	Segment(const Line&, const Point&, const Point&);
 	Segment(const Point&, const Point&);
 
 	Point get_p1() const { return p1; }
 	Point get_avr() const { return avr_point; }
 
 	friend istream& operator>> (istream&, Segment&);
+	friend ostream& operator<< (ostream&, const Segment&);
 
 	friend Point segment_intersection(const Segment&, const Segment&);
 
 	// Check if the Point is on the Segment
-	bool is_on(const Point&) override;
+	bool is_on(const Point&) const override;
 
 	void draw() const override;
 };

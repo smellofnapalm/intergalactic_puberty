@@ -106,7 +106,7 @@ void Polygon::rotate_polygon(double angle, const Point& p)
 {
 	int n = points.size();
 	for (int i = 0; i < n; i++)
-		points[i] = Vector::rotate_vector(points[i], angle, p);
+		points[i] = Vector::rotate(points[i], angle, p);
 }
 
 void Polygon::draw() const

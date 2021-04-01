@@ -2,11 +2,6 @@
 
 // SETTERS
 
-void Line::set_p0(double x0)
-{
-	p0 = { x0, (*this)[x0] };
-}
-
 void Line::set_p0()
 {
 	p0 = { 0, (*this)[0] };
@@ -63,7 +58,7 @@ double Line::operator[](double x0) const
 	return -(get_A()*x0 + get_C())/get_B();
 }
 
-bool Line::is_on(const Point& p)
+bool Line::is_on(const Point& p) const
 {
 	return A * p.get_x() + B * p.get_y() + C == 0.0;
 }
@@ -130,7 +125,7 @@ Line make_parallel_line(const Line& l, const Point& p)
 Point intersection(const Line& l1, const Line& l2)
 {
 	double x, y;
-	if (l1 == l2 || are_parallel(l1, l2)) return { 1e9, 1e9 };
+	if (l1 == l2 || are_parallel(l1, l2)) return UNDEF;
 	x = -(l1.C * l2.B - l2.C * l1.B) / (l1.A * l2.B - l2.A * l1.B);
 	y = -(l1.A * l2.C - l2.A * l1.C) / (l1.A * l2.B - l2.A * l1.B);
 	return { x, y };
@@ -142,6 +137,15 @@ istream& operator>>(istream& in, Ray& r)
 	in >> a >> b;
 	r = Ray(a, b);
 	return in;
+}
+
+ostream& operator<<(ostream& out, const Ray& r)
+{
+	out << "The begin of the ray is:\n";
+	out << r.get_p0() << endl;
+	out << "The directing vector (v) of the ray is:\n";
+	out << r.get_v() << endl;
+	return out;
 }
 
 Point ray_intersection(const Ray& r1, const Ray& r2)
@@ -167,7 +171,7 @@ Point ray_intersection(const Ray& r1, const Ray& r2)
 		if (ans.get_x() <= min(r1.p0.get_x(), r2.p0.get_x()))
 			return ans;
 	}
-	return INF;
+	return UNDEF;
 }
 
 istream& operator>>(istream& in, Segment& s)
@@ -178,25 +182,35 @@ istream& operator>>(istream& in, Segment& s)
 	return in;
 }
 
+ostream& operator<<(ostream& out, const Segment& s)
+{
+	out << "The first point of the segment is:\n";
+	out << s.get_p0() << endl;
+	out << "The second point of the segment is:\n";
+	out << s.get_p1() << endl;
+	return out;
+}
+
 Point segment_intersection(const Segment& s1, const Segment& s2)
 {
-	Point ans = intersection(s1, s2);
+	Point ans = intersection((Line)s1, (Line)s2);
 	double x = ans.get_x(), y = ans.get_y();
 	if (x >= min(s1.p0.get_x(), min(s1.p1.get_x(), min(s2.p0.get_x(), s2.p1.get_x()))) &&
 		x <= max(s1.p0.get_x(), min(s1.p1.get_x(), min(s2.p0.get_x(), s2.p1.get_x()))) &&
 		y >= min(s1.p0.get_y(), min(s1.p1.get_y(), min(s2.p0.get_y(), s2.p1.get_y()))) &&
-		y <= max(s1.p0.get_y(), min(s1.p1.get_y(), min(s2.p0.get_y(), s2.p1.get_y())))) return ans;
-	return INF;
+		y <= max(s1.p0.get_y(), min(s1.p1.get_y(), min(s2.p0.get_y(), s2.p1.get_y())))) 
+		return ans;
+	return UNDEF;
 }
 
-Ray::Ray(const Line& l, double x0, double x1)
+Ray::Ray(const Line & _l, const Point& _p0, const Point& _p1)
 {
-	A = l.get_A();
-	B = l.get_B();
-	C = l.get_C();
+	A = _l.get_A();
+	B = _l.get_B();
+	C = _l.get_C();
 
-	p0 = { x0, l[x0] };
-	p1 = { x1, l[x1] };
+	p0 = _p0;
+	p1 = _p1;
 	v = 1 / ((Vector)(p1 - p0)).length() * (Vector)(p1 - p0);
 	n = { -v.get_y(), v.get_x() };
 }
@@ -204,10 +218,10 @@ Ray::Ray(const Line& l, double x0, double x1)
 Ray::Ray(const Point& p0, const Point& p1)
 {
 	Line l = Line(p0, p1);
-	(*this) = Ray(l, p0.get_x(), p1.get_y());
+	(*this) = Ray(l, p0, p1);
 }
 
-bool Ray::is_on(const Point& p)
+bool Ray::is_on(const Point& p) const
 {
 	return (A*p.get_x() + B*p.get_y() + C == 0)
 	&& (p.get_x() - p0.get_x())*(p1.get_x() - p0.get_x()) >= 0;
@@ -224,14 +238,14 @@ void Ray::draw() const
 	glEnd();
 }
 
-Segment::Segment(const Line& l, double x0, double x1)
+Segment::Segment(const Line& _l, const Point& _p0, const Point& _p1)
 {
-	A = l.get_A();
-	B = l.get_B();
-	C = l.get_C();
+	A = _l.get_A();
+	B = _l.get_B();
+	C = _l.get_C();
 
-	p0 = { x0, l[x0] };
-	p1 = { x1, l[x1] };
+	p0 = _p0;
+	p1 = _p1;
 	v = 1 / ((Vector)(p1 - p0)).length() * (Vector)(p1 - p0);
 	n = { -v.get_y(), v.get_x() };
 
@@ -241,10 +255,10 @@ Segment::Segment(const Line& l, double x0, double x1)
 Segment::Segment(const Point& a, const Point& b)
 {
 	Line l = Line(a, b);
-	(*this) = Segment(l, a.get_x(), b.get_x());
+	(*this) = Segment(l, a, b);
 }
 
-bool Segment::is_on(const Point& p)
+bool Segment::is_on(const Point& p) const
 {
 	return A*p.get_x() + B*p.get_y() + C == 0 &&
 	(p.get_x() - p0.get_x())*(p.get_x() - p1.get_x()) <= 0;

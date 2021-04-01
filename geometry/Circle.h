@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -25,12 +26,12 @@ public:
 
 	Point get_center() const;
 	double get_r() const;
-
 	void set_center(Point);
 	void set_r(double);
 
-	double get_length();
-	double get_area();
+	// Length of the circumfirence
+	double get_length() const;
+	double get_area() const;
 	// Returns -1 if the point is out of the circle
 	// Returns 0 if the point is on the circle
 	// Returns 1 if the point is inside the circle
@@ -39,13 +40,15 @@ public:
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);
 	friend bool operator==(const Circle&, const Circle&);
+
+	// Return common points and if circles are equal return two random points
 	friend vector<Point> circles_intersection(const Circle&, const Circle&);
 
 	// Make a tangent line to a circle in a certain point
 	static Line make_tangent_line(const Circle&, const Point&);
 
 	// Calculate the distance from given point to circle
-	double distance_to_point(const Point& A);
+	double distance_to_point(const Point&);
 
 	void draw() const override;
 };

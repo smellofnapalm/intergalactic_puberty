@@ -1,14 +1,9 @@
 #pragma once
 
-#include "Polygon.h"
-const vector<string> v =
-{
-	"Create a new point",
-	"Create a new line",
-	"Create a new triangle",
-	"Create a new circle",
-	"Create a new polygon"
-};
+#include <vector>
+using namespace std;
+
+const vector<string> v;
 
 void create_point();
 void create_line();

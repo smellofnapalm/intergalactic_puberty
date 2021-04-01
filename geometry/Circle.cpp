@@ -1,5 +1,7 @@
 #include "Circle.h"
 
+double sqr(double a) { return a * a; }
+
 Circle::Circle(Point center, double r)
 {
 	set_center(center);
@@ -12,12 +14,12 @@ double Circle::get_r() const { return _r; }
 void Circle::set_center(Point center) { _center = center; }
 void Circle::set_r(double r) { _r = r; }
 
-double Circle::get_length()
+double Circle::get_length() const
 {
 	return (2 * PI * _r);
 }
 
-double Circle::get_area()
+double Circle::get_area() const
 {
 	return (PI * _r * _r);
 }
@@ -25,7 +27,7 @@ double Circle::get_area()
 int Circle::point_occurrence(const Point& t, const Circle& o)
 {
 	double temp;
-	temp = (t.get_x() - o._center.get_x()) * (t.get_x() - o._center.get_x()) + (t.get_y() - o._center.get_y()) * (t.get_y() - o._center.get_y()) - o.get_r() * o.get_r();
+	temp = sqr((t.get_x() - o._center.get_x())) + sqr((t.get_y() - o._center.get_y())) - sqr(o.get_r());
 	if (temp > 0) return -1;
 	if (temp < 0) return 1;
 	return 0;
@@ -38,7 +40,7 @@ Line Circle::make_tangent_line(const Circle& o, const Point& p)
 	double x1 = p.get_x();
 	double y1 = p.get_y();
 	double r = o.get_r();
-	return Line(x1 - x0, y1 - y0, -x1*x0 - y1*y0 + x0*x0 + y0*y0 - r*r);
+	return Line(x1 - x0, y1 - y0, -x1 * x0 - y1 * y0 + x0 * x0 + y0 * y0 - r * r);
 }
 
 void Circle::draw() const
@@ -66,17 +68,25 @@ istream& operator>> (istream& in, Circle& o)
 	return in;
 }
 
-ostream& operator<< (ostream& out, const Circle& o)
+ostream& operator<< (ostream& out, const Circle& circle)
 {
-	out << "Circle equation" << endl;
-	out << "(x-" << o._center.get_x() << ")^2 + (y-" << o._center.get_y() << ")^2 = " << o.get_r() * o.get_r() << endl;
-	out << "x^2 + y^2 + (" << -2 * o._center.get_x() << ")x + (" << -2 * o._center.get_y() << ")y + (" << o._center.get_x() * o._center.get_x() + o._center.get_y() * o._center.get_y() - o.get_r() * o.get_r() << ") = 0" << endl;
+	out << "Circle equation:" << endl;
+
+	out << "(x -" << circle._center.get_x() 
+		<< ")^2 + (y -" << circle._center.get_y() 
+		<< ")^2 = " << circle.get_r() * circle.get_r() << endl;
+
+	out << "The center of the circle is:\n";
+	out << circle.get_center() << endl;
+	out << "The radius of the circle is:\n";
+	out << circle.get_r() << endl;
+
 	return out;
 }
 
 bool operator==(const Circle& o1, const Circle& o2)
 {
-	return(o1._center == o2._center && o1._r == o2._r);
+	return o1._center == o2._center && o1._r == o2._r;
 }
 
 double Circle::distance_to_point(const Point& p)
@@ -85,13 +95,15 @@ double Circle::distance_to_point(const Point& p)
 	If point is inside - radius minus distance from point to the center
 	If point is outside - distance from point to the center minus radius
 	*/
-	Point  c = this->get_center();
-	double r = this->get_r();
-	double t = (p.get_x() - c.get_x()) * (p.get_x() - c.get_x()) + (p.get_y() - c.get_y()) * (p.get_y() - c.get_y()) - r * r;
+	Point c = get_center();
+	double r = get_r();
+	double t = sqr((p.get_x() - c.get_x())) + sqr((p.get_y() - c.get_y())) - sqr(r);
 
-	     if (t == 0) return 0;
-	else if (t > 0)  return (dist(p, c) - r);
-	else			 return (r - dist(p, c));
+	if (t == 0) 
+		return 0;
+	else if (t > 0)  
+		return (dist(p, c) - r);
+	return (r - dist(p, c));
 }
 
 vector<Point> circles_intersection(const Circle& o1, const Circle& o2)
@@ -107,6 +119,7 @@ vector<Point> circles_intersection(const Circle& o1, const Circle& o2)
 	the same way if B != 0
 	You can solve the system on your way by creating substitutions and then have big formulas for a,b,c as example.
 	*/
+
 	Point  c1 = o1.get_center();
 	Point  c2 = o2.get_center();
 	double x1 = c1.get_x(),
@@ -123,13 +136,16 @@ vector<Point> circles_intersection(const Circle& o1, const Circle& o2)
 	{
 		// If no intersecton
 		if (r1 != r2) return {};
+
+		// If they are equal then return two points on a diameter
+		return { o1.get_center() + Point(r1, 0), o1.get_center() - Point(r1, 0) };
 	}
 
 	if (A != 0)
 	{
 		double a = (B * B) / (A * A) + 1;
 		double b = 2 * (B * C / (A * A) + (B * x1 / A) - y1);
-		double c = y1 * y1 - r1 * r1 + pow(-(C / A) - x1, 2);
+		double c = y1 * y1 - r1 * r1 + sqr(-(C / A) - x1);
 
 		double D = b * b - 4 * a * c;
 		// No roots
@@ -158,7 +174,7 @@ vector<Point> circles_intersection(const Circle& o1, const Circle& o2)
 
 		double a = (A * A) / (B * B) + 1;
 		double b = 2 * ((A * C) / (B * B) + (A * y1) / B - x1);
-		double c = x1 * x1 - r1 * r1 + pow(-(C / B) - y1, 2);
+		double c = x1 * x1 - r1 * r1 + sqr(-(C / B) - y1);
 
 		double D = b * b - 4 * a * c;
 		// No roots
@@ -181,4 +197,6 @@ vector<Point> circles_intersection(const Circle& o1, const Circle& o2)
 			return { Point(x01, y01), Point(x02, y02) };
 		}
 	}
+
+	return {};
 }

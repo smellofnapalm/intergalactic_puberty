@@ -42,14 +42,13 @@ public:
 	friend Point operator-(const Point&, const Point&);
 	friend Point operator-(const Point&);
 
-	friend double dist(const Point& a, const Point& b)
-	{
-		return sqrt((a.get_x() - b.get_x()) * (a.get_x() - b.get_x()) +
-			(a.get_y() - b.get_y()) * (a.get_y() - b.get_y()));
-	}
+	friend double dist(const Point&, const Point&);
 
 	void draw() const override;
 };
+
+// Some special point we return if there is no such point
+const Point UNDEF = { 1e9, 1e9 };
 
 class Vector : public Point
 {
@@ -59,8 +58,10 @@ public:
 	Vector(const Vector&);
 	Vector(const Point&);
 
+	// Scalar product of vectors
 	friend double operator*(const Vector&, const Vector&);
+
 	friend double vector_product(const Vector&, const Vector&);
-	static Vector rotate_vector(const Vector&, double, const Point&);
-	double length();
+	static Vector rotate(const Vector&, double, const Point&);
+	double length() const;
 };
