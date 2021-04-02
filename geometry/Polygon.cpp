@@ -220,3 +220,44 @@ Ray Polygon::create_bisector(const Point& p)
 		return t.create_bisector(p);
 	}	
 }
+
+void convex_hull(const Polygon& many, Polygon& shell)
+{
+	int n = many.points.size();
+	Point* a = new Point[n];
+	{
+		int minx = 0;
+		for (int i = 0; i < n; i++)
+		{
+			a[i] = many.points[i];
+			if (a[i].get_x() < a[minx].get_x())
+				minx = i;
+		}
+		Point temp = a[minx];
+		a[minx] = a[0];
+		a[0] = temp;
+	}
+	for (int i = 2; i < n; i++)
+	{
+		int j = i;
+		while (j > 1 && rotate(a[0], a[j - 1], a[j]) < 0)
+		{
+			Point temp = a[j];
+			a[j] = a[j-1];
+			a[j-1] = temp;
+			j--;
+		}
+	}
+	shell.points.push_back(a[0]);
+	shell.points.push_back(a[1]);
+	for (int i = 2; i < n; i++)
+	{
+		shell.points.push_back(a[i]);
+		int size = shell.points.size();
+		while ((rotate(shell.points[size - 3], shell.points[size - 2], shell.points[size - 1])) < 0 && size != 2)
+		{
+			shell.points.erase(shell.points.begin() + (size - 2));
+			size--;
+		}
+	}
+}

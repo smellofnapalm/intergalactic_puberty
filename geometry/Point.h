@@ -9,9 +9,9 @@
 #include <fstream>
 #include <iomanip>
 #include <conio.h>
-
-#include "Object.h"
-#include "glut/glut.h"
+//
+//#include "Object.h"
+//#include "glut/glut.h"
 
 using namespace std;
 
@@ -45,6 +45,9 @@ public:
 	friend double dist(const Point&, const Point&);
 
 	void draw() const override;
+
+	//Three points are given A,B,C. The function determines which side of the AB vector is the point C (left or right)
+	friend int rotate(const Point&, const Point, const Point);
 };
 
 // Some special point we return if there is no such point

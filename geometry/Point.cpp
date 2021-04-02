@@ -141,3 +141,8 @@ double Vector::length() const
 {
 	return sqrt(x*x + y*y);
 }
+
+int rotate(const Point& A, const Point B, const Point C)
+{
+	return ((B.get_x() - A.get_x()) * (C.get_y() - B.get_y()) - (B.get_y() - A.get_y()) * (C.get_x() - B.get_x()));
+}

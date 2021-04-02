@@ -51,4 +51,6 @@ public:
 	Ray create_bisector(const Point&);
 
 	void draw() const override;
+
+	friend void convex_hull(const Polygon&, Polygon&);
 };
