@@ -67,25 +67,6 @@ void Polygon::set_convex()
 	is_convex = true;
 }
 
-Point Polygon::get_center() const
-{
-	return center;
-}
-
-double Polygon::get_area() const
-{
-	return area;
-}
-
-double Polygon::get_perimeter() const
-{
-	return perimeter;
-}
-
-bool Polygon::get_convex() const
-{
-	return is_convex;
-}
 Polygon operator+(const Polygon& polygon, const Vector& shift)
 {
 	vector <Point> new_points;
@@ -221,15 +202,17 @@ Ray Polygon::create_bisector(const Point& p)
 	}	
 }
 
-void convex_hull(const Polygon& many, Polygon& shell)
+// Realization is taken from
+// https://habr.com/ru/post/144921/
+Polygon convex_hull(const Polygon& given)
 {
-	int n = many.points.size();
+	int n = given.points.size();
 	Point* a = new Point[n];
 	{
 		int minx = 0;
 		for (int i = 0; i < n; i++)
 		{
-			a[i] = many.points[i];
+			a[i] = given.points[i];
 			if (a[i].get_x() < a[minx].get_x())
 				minx = i;
 		}
@@ -248,16 +231,19 @@ void convex_hull(const Polygon& many, Polygon& shell)
 			j--;
 		}
 	}
-	shell.points.push_back(a[0]);
-	shell.points.push_back(a[1]);
+
+	vector <Point> shell;
+	shell.push_back(a[0]);
+	shell.push_back(a[1]);
 	for (int i = 2; i < n; i++)
 	{
-		shell.points.push_back(a[i]);
-		int size = shell.points.size();
-		while ((rotate(shell.points[size - 3], shell.points[size - 2], shell.points[size - 1])) < 0 && size != 2)
+		shell.push_back(a[i]);
+		int size = shell.size();
+		while ((rotate(shell[size - 3], shell[size - 2], shell[size - 1])) < 0 && size != 2)
 		{
-			shell.points.erase(shell.points.begin() + (size - 2));
+			shell.erase(shell.begin() + (size - 2));
 			size--;
 		}
 	}
+	return Polygon(shell);
 }

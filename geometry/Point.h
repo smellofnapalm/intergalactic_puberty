@@ -9,9 +9,9 @@
 #include <fstream>
 #include <iomanip>
 #include <conio.h>
-//
-//#include "Object.h"
-//#include "glut/glut.h"
+
+#include "Object.h"
+#include "glut/glut.h"
 
 using namespace std;
 

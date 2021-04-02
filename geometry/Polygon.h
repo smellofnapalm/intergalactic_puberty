@@ -22,16 +22,17 @@ protected:
 	double area = 0;
 	double perimeter = 0;
 	bool is_convex = false;
-public:
+
 	void set_center();
 	void set_area();
 	void set_perimeter();
 	void set_convex();
-
-	Point get_center() const;
-	double get_area() const;
-	double get_perimeter() const;
-	bool get_convex() const;
+public:
+	Point get_center() const { return center; }
+	double get_area() const { return area; }
+	double get_perimeter() const { return perimeter; }
+	bool get_convex() const { return is_convex; };
+	vector <Point> get_points() const { return points; };
 
 	Polygon() {}
 	Polygon(vector<Point>);
@@ -52,5 +53,5 @@ public:
 
 	void draw() const override;
 
-	friend void convex_hull(const Polygon&, Polygon&);
+	friend Polygon convex_hull(const Polygon&);
 };

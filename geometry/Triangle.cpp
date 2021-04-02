@@ -4,7 +4,7 @@ bool points_check(const Point& A, const Point& B, const Point& C)
 {
 	Line L(A, B);
 	// Check for C in AB Line
-	return L[C.get_x()] == C.get_y();
+	return L.is_on(C);
 }
 
 Triangle::Triangle(double x1, double y1, double x2, double y2, double x3, double y3) 
