@@ -2,15 +2,25 @@
 
 // POLYGON FUNCTIONS
 
+Polygon convex_hull(const vector<Point>& given);
+
 Polygon::Polygon(vector <Point> v)
 {
 	if (v.size() <= 2) 
 		throw exception("Polygon must contain > 2 points!");
+
 	this->points = v;
+	set_convex();
+
+	// We use only convex polygons!
+	if (!is_convex) *this = convex_hull(*this);
+	is_convex = true;
+
 	set_area();
 	set_perimeter();
 	set_center();
-	set_convex();
+
+
 }
 
 void Polygon::set_center()
@@ -57,7 +67,7 @@ void Polygon::set_convex()
 		Vector a, b;
 		a = Vector(points[(i + 1) % n].get_x() - points[i].get_x(), points[(i + 1) % n].get_y() - points[i].get_y());
 		b = Vector(points[(i - 1 + n) % n].get_x() - points[i].get_x(), points[(i - 1 + n) % n].get_y() - points[i].get_y());
-		if (vector_product(a, b) * last < 0 && i > 0)
+		if (vector_product(a, b) * last <= 0 && i > 0)
 		{
 			is_convex = false;
 			return;
@@ -204,15 +214,15 @@ Ray Polygon::create_bisector(const Point& p)
 
 // Realization is taken from
 // https://habr.com/ru/post/144921/
-Polygon convex_hull(const Polygon& given)
+Polygon convex_hull(const vector<Point>& given)
 {
-	int n = given.points.size();
+	int n = given.size();
 	Point* a = new Point[n];
 	{
 		int minx = 0;
 		for (int i = 0; i < n; i++)
 		{
-			a[i] = given.points[i];
+			a[i] = given[i];
 			if (a[i].get_x() < a[minx].get_x())
 				minx = i;
 		}
@@ -246,4 +256,9 @@ Polygon convex_hull(const Polygon& given)
 		}
 	}
 	return Polygon(shell);
+}
+
+Polygon convex_hull(const Polygon& p)
+{
+	return convex_hull(p.get_points());
 }

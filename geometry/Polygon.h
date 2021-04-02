@@ -23,9 +23,13 @@ protected:
 	double perimeter = 0;
 	bool is_convex = false;
 
+	// These formulas are taken from Wikipedia
 	void set_center();
 	void set_area();
+
 	void set_perimeter();
+
+	// Check sign of vector products
 	void set_convex();
 public:
 	Point get_center() const { return center; }
@@ -53,5 +57,6 @@ public:
 
 	void draw() const override;
 
+	friend Polygon convex_hull(const vector<Point>&);
 	friend Polygon convex_hull(const Polygon&);
 };
