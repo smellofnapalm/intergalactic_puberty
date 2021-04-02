@@ -1,14 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <map>
-#include <algorithm>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <conio.h>
-#include "Point.h"
+
 #include "Line.h"
 #include "Triangle.h"
 

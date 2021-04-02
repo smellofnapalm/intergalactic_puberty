@@ -27,7 +27,16 @@ void create_line()
 	Point p0, p1;
 	cout << "Enter two points of the line:\n";
 	cin >> p0 >> p1;
-	Line l = Line(p0, p1);
+	Line l;
+	try
+	{
+		l = Line(p0, p1);
+	}
+	catch (const exception& ex)
+	{
+		cout << ex.what() << endl;
+		return;
+	}
 	cout << l;
 }
 
@@ -54,16 +63,25 @@ void create_triangle()
 
 void create_circle()
 {
-	Point cent;
+	Point center;
 	double r, S, L;
 	cout << "Enter the center of the circle" << endl;
-	cin >> cent;
+	cin >> center;
 	cout << "Enter radius of the circle" << endl;
 	cin >> r;
-	Circle o(cent, r);
-	cout << o;
-	S = o.get_area();
-	L = o.get_length();
+	Circle circle;
+	try
+	{
+		circle = Circle(center, r);
+	}
+	catch (const exception& ex)
+	{
+		cout << ex.what() << endl;
+		return;
+	}
+	cout << circle;
+	S = circle.get_area();
+	L = circle.get_length();
 	cout << "Circumference length = " << L << endl << "Area of a circle = " << S << endl;
 }
 

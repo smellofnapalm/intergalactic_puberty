@@ -4,15 +4,12 @@ double sqr(double a) { return a * a; }
 
 Circle::Circle(Point center, double r)
 {
+	if (r <= 0)
+		throw exception("Radius of the circle should be > 0!");
+
 	set_center(center);
 	set_r(r);
 }
-
-Point Circle::get_center() const { return _center; }
-double Circle::get_r() const { return _r; }
-
-void Circle::set_center(Point center) { _center = center; }
-void Circle::set_r(double r) { _r = r; }
 
 double Circle::get_length() const
 {
@@ -24,22 +21,25 @@ double Circle::get_area() const
 	return (PI * _r * _r);
 }
 
-int Circle::point_occurrence(const Point& t, const Circle& o)
+int Circle::point_occurrence(const Point& p, const Circle& circle) const
 {
-	double temp;
-	temp = sqr((t.get_x() - o._center.get_x())) + sqr((t.get_y() - o._center.get_y())) - sqr(o.get_r());
+	double temp = 0;
+	temp = sqr((p.get_x() - circle._center.get_x())) 
+		+ sqr((p.get_y() - circle._center.get_y())) 
+		- sqr(circle.get_r());
+
 	if (temp > 0) return -1;
 	if (temp < 0) return 1;
 	return 0;
 }
 
-Line Circle::make_tangent_line(const Circle& o, const Point& p)
+Line Circle::make_tangent_line(const Circle& circle, const Point& p)
 {
-	double x0 = o.get_center().get_x();
-	double y0 = o.get_center().get_y();
+	double x0 = circle.get_center().get_x();
+	double y0 = circle.get_center().get_y();
 	double x1 = p.get_x();
 	double y1 = p.get_y();
-	double r = o.get_r();
+	double r = circle.get_r();
 	return Line(x1 - x0, y1 - y0, -x1 * x0 - y1 * y0 + x0 * x0 + y0 * y0 - r * r);
 }
 
@@ -59,12 +59,12 @@ void Circle::draw() const
 	glEnd();
 }
 
-istream& operator>> (istream& in, Circle& o)
+istream& operator>> (istream& in, Circle& circle)
 {
 	Point center;
 	double r;
 	in >> center >> r;
-	o = Circle(center, r);
+	circle = Circle(center, r);
 	return in;
 }
 
@@ -72,9 +72,12 @@ ostream& operator<< (ostream& out, const Circle& circle)
 {
 	out << "Circle equation:" << endl;
 
-	out << "(x -" << circle._center.get_x() 
-		<< ")^2 + (y -" << circle._center.get_y() 
-		<< ")^2 = " << circle.get_r() * circle.get_r() << endl;
+	if (circle.get_center() == Point(0, 0))
+		out << "x^2 + y^2 = " << sqr(circle.get_r()) << endl;
+	else
+		out << "(x - (" << circle._center.get_x() 
+			<< "))^2 + (y - (" << circle._center.get_y() 
+			<< "))^2 = " << sqr(circle.get_r()) << endl;
 
 	out << "The center of the circle is:\n";
 	out << circle.get_center() << endl;
@@ -84,12 +87,12 @@ ostream& operator<< (ostream& out, const Circle& circle)
 	return out;
 }
 
-bool operator==(const Circle& o1, const Circle& o2)
+bool operator==(const Circle& circle1, const Circle& circle2)
 {
-	return o1._center == o2._center && o1._r == o2._r;
+	return circle1._center == circle2._center && circle1._r == circle2._r;
 }
 
-double Circle::distance_to_point(const Point& p)
+double Circle::distance_to_point(const Point& p) const
 {
 	/*
 	If point is inside - radius minus distance from point to the center

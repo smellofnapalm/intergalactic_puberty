@@ -19,8 +19,6 @@ Polygon::Polygon(vector <Point> v)
 	set_area();
 	set_perimeter();
 	set_center();
-
-
 }
 
 void Polygon::set_center()

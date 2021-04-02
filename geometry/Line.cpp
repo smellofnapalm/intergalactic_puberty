@@ -37,6 +37,8 @@ Line::Line(double _A, double _B, double _C) : A(_A), B(_B), C(_C)
 
 Line::Line(const Point& _p0, const Point& _p1) : p0(_p0)
 {
+	if (_p0 == _p1)
+		throw exception("Line should have >= 2 points!");
 	v = _p1 - _p0;
 	v = (1 / v.length()) * v;
 	n = { -v.get_y(), v.get_x() };
@@ -45,6 +47,8 @@ Line::Line(const Point& _p0, const Point& _p1) : p0(_p0)
 
 Line::Line(const Point& _p0, const Vector& _v) : p0(_p0), v(_v)
 {
+	if (v == Point(0, 0))
+		throw exception("Line can't have a (0, 0) directing vector!");
 	v = (1 / v.length()) * v;
 	n = { -v.get_y(), v.get_x() };
 	set_coef();

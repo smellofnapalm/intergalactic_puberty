@@ -1,19 +1,10 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include "Object.h"
-#include "Point.h"
 #include "Line.h"
 
 using namespace std;
 
-#define PI 3.14159265358979
+const double PI = 3.141592653589;
 
 class Circle : public Object
 {
@@ -24,10 +15,10 @@ public:
 	Circle() {}
 	Circle(Point, double);
 
-	Point get_center() const;
-	double get_r() const;
-	void set_center(Point);
-	void set_r(double);
+	Point get_center() const { return _center; };
+	double get_r() const { return _r; };
+	void set_center(const Point& center) { _center = center; };
+	void set_r(double r) { _r = r; };
 
 	// Length of the circumfirence
 	double get_length() const;
@@ -35,7 +26,7 @@ public:
 	// Returns -1 if the point is out of the circle
 	// Returns 0 if the point is on the circle
 	// Returns 1 if the point is inside the circle
-	int point_occurrence(const Point&, const Circle&);
+	int point_occurrence(const Point&, const Circle&) const;
 
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);
@@ -48,7 +39,7 @@ public:
 	static Line make_tangent_line(const Circle&, const Point&);
 
 	// Calculate the distance from given point to circle
-	double distance_to_point(const Point&);
+	double distance_to_point(const Point&) const;
 
 	void draw() const override;
 };
