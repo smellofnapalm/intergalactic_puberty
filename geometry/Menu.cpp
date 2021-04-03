@@ -2,15 +2,7 @@
 #include "Triangle.h"
 #include "Line.h"
 #include "Circle.h"
-
-const vector<string> v =
-{
-	"Create a new point",
-	"Create a new line",
-	"Create a new triangle",
-	"Create a new circle",
-	"Create a new polygon"
-};
+#include "Menu.h"
 
 void create_point()
 {
@@ -108,7 +100,7 @@ void create_polygon()
 	cout << polygon;
 }
 
-int print_menu(vector<string> mas = v)
+int print_menu(vector<string> mas)
 {
 	const int ENTER = 224;
 	const int UP = 72;

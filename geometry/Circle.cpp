@@ -2,7 +2,7 @@
 
 double sqr(double a) { return a * a; }
 
-Circle::Circle(Point center, double r)
+Circle::Circle(const Point& center, double r)
 {
 	if (r <= 0)
 		throw exception("Radius of the circle should be > 0!");

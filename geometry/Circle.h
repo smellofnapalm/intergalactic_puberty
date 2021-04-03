@@ -13,7 +13,7 @@ private:
 	Point _center = { 0, 0 };
 public:
 	Circle() {}
-	Circle(Point, double);
+	Circle(const Point&, double);
 
 	Point get_center() const { return _center; };
 	double get_r() const { return _r; };
@@ -23,6 +23,7 @@ public:
 	// Length of the circumfirence
 	double get_length() const;
 	double get_area() const;
+
 	// Returns -1 if the point is out of the circle
 	// Returns 0 if the point is on the circle
 	// Returns 1 if the point is inside the circle

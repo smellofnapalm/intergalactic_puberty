@@ -3,7 +3,14 @@
 #include <vector>
 using namespace std;
 
-const vector<string> v;
+const vector<string> v =
+{
+	"Create a new point",
+	"Create a new line",
+	"Create a new triangle",
+	"Create a new circle",
+	"Create a new polygon"
+};
 
 void create_point();
 void create_line();
