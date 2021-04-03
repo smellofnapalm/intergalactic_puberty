@@ -133,31 +133,6 @@ void Triangle::set_type()
 	}
 }
 
-double Triangle::get_area() const 
-{
-	return S;
-}
-
-double Triangle::get_perimeter() const 
-{
-	return P;
-}
-
-double Triangle::get_R() const
-{
-	return R;
-}
-
-double Triangle::get_r() const
-{
-	return r;
-}
-
-string Triangle::get_type() const
-{
-	return type;
-}
-
 vector<double> Triangle::get_sides() const
 {
 	// Returns sides AB, AC, BC
@@ -217,7 +192,7 @@ ostream& operator<<(ostream& out, Triangle& triangle)
 	return out;
 }
 
-int Triangle::point_is_inside(const Point& p)
+int Triangle::point_is_inside(const Point& p) const
 {
 	/*
 	f are results of vector products 

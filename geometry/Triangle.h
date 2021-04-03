@@ -44,11 +44,11 @@ public:
 	Triangle(const Point &, const Point &, const Point &);
 	Triangle(vector<Point>);
 
-	string get_type() const;
-	double get_area() const;
-	double get_perimeter() const;
-	double get_R() const;
-	double get_r() const;
+	string get_type() const { return type; };
+	double get_area() const { return S; };
+	double get_perimeter() const { return P; };
+	double get_R() const { return R; };
+	double get_r() const { return r; };
 	// Return array with the length of ...
 	vector<double> get_medians() const;
 	vector<double> get_sides() const;
@@ -58,14 +58,11 @@ public:
 	vector<double> get_angles() const;
 
 	// Check if 1 - inside 0 - on or -1 - outside
-	int point_is_inside(const Point&);
+	int point_is_inside(const Point&) const;
 	// For output
 	friend ostream& operator<<(ostream&, Triangle&);
-	// Check for rectangular triangle
-	friend bool rectangular_check(double, double, double);
-	// Check for points not on the same line
-	friend bool points_check(const Point&, const Point&, const Point&);
 	
+
 	// Funcs for creating equations of bisector, altitude(height), midline
 	Ray create_bisector(const Point&);
 	Segment create_altitude(const Point&);
@@ -75,4 +72,7 @@ public:
 	void draw() const override;
 };
 
+// Check for points not on the same line
 bool points_check(const Point&, const Point&, const Point&);
+// Check for rectangular triangle
+bool rectangular_check(double, double, double);
