@@ -37,8 +37,8 @@ private:
 	void set_type();
 
 	// Create triangle with given 1 or 2 points for calculating equations
-	Triangle triangle_point_set1(Point& n, Point& k, Point& m);
-	Triangle triangle_point_set2(Point& n, Point& k, Point& m);
+	Triangle triangle_point_shift1(Point& n, Point& k, Point& m);
+	Triangle triangle_point_shift2(Point& n, Point& k, Point& m);
 public:
 	Triangle(double, double, double, double, double, double);
 	Triangle(const Point &, const Point &, const Point &);

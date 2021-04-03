@@ -231,89 +231,71 @@ int Triangle::point_is_inside(const Point& p)
 	f2 = (B.get_x() - p.get_x()) * (C.get_y() - B.get_y()) - (C.get_x() - B.get_x()) * (B.get_y() - p.get_y());
 	f3 = (C.get_x() - p.get_x()) * (A.get_y() - C.get_y()) - (A.get_x() - C.get_x()) * (C.get_y() - p.get_y());
 
-	if (f1 == 0) 
+	if (f1*f2*f3 == 0) 
 	{
-		Segment s(A, B);
-		if (s.is_on(p)) {
+		Segment s1(A, B), s2(B, C), s3(A, C);
+		if ( s1.is_on(p) || s2.is_on(p) || s3.is_on(p)) {
 			return 0;
 		}
 	}
-	if (f2 == 0) 
-	{
-		Segment s(B, C);
-		if (s.is_on(p)) {
-			return 0;
-		}
-	}
-	if (f3 == 0) 
-	{
-		Segment s(A, C);
-		if (s.is_on(p)) {
-			return 0;
-		}
-	}
-
 	else if ((f1 > 0 && f2 > 0 && f3 > 0) || (f1 < 0 && f2 < 0 && f3 < 0)) return 1;
 	else return -1;
 }
 
-Triangle Triangle::triangle_point_set1(Point& n, Point& k, Point& m)
+Triangle Triangle::triangle_point_shift1(Point& p1, Point& p2, Point& p3)
 {
-	if (k == A) n = B, m = C;
-	else if (k == B) n = A, m = C;
-	else if (k == C) n = A, m = B;
-	return Triangle(n, k, m);
+	if (p2 == A) p1 = B, p3 = C;
+	else if (p2 == B) p1 = A, p3 = C;
+	else if (p2 == C) p1 = A, p3 = B;
+	return Triangle(p1, p2, p3);
 }
 
-Triangle Triangle::triangle_point_set2(Point& n, Point& k, Point& m)
+Triangle Triangle::triangle_point_shift2(Point& p1, Point& p2, Point& p3)
 {
-	if (n == A && k == B || n == B && k == A) m = C;
-	else if (n == A && k == C || n == C && k == A) m = B;
-	else if (n == B && k == C || n == C && k == B) m = A;
-	return Triangle(n, k, m);
+	if (p1 == A && p2 == B || p1 == B && p2 == A) p3 = C;
+	else if (p1 == A && p2 == C || p1 == C && p2 == A) p3 = B;
+	else if (p1 == B && p2 == C || p1 == C && p2 == B) p3 = A;
+	return Triangle(p1, p2, p3);
 }
 
-Segment Triangle::create_midline(const Point& p1, const Point& p2)
+Segment Triangle::create_midline(const Point& point1, const Point& point2)
 {
 	// Same triangle but points will be shifted for formula
-	Point n, k, m;
-	n = p1, k = p2;
-	Triangle t = triangle_point_set2(n, k, m);
+	Point p1, p2, p3;
+	p1 = point1, p2 = point2;
+	Triangle t = triangle_point_shift2(p1, p2, p3);
 	
 	// Calculate the equation of middle line BC
-	double x1 = (t.A.get_x() + t.B.get_x()) / 2;
-	double y1 = (t.A.get_y() + t.B.get_y()) / 2;
-	Point X1(x1, y1);
-	double x2 = (t.A.get_x() + t.C.get_x()) / 2;
-	double y2 = (t.A.get_y() + t.C.get_y()) / 2;
-	Point X2(x2, y2);
-	Segment Z(X1, X2);
-	return Z;
+	Point x1((t.A.get_x() + t.B.get_x()) / 2, (t.A.get_x() + t.B.get_x()) / 2);
+	Point x2((t.A.get_x() + t.B.get_x()) / 2, (t.A.get_x() + t.B.get_x()) / 2);
+	Segment mid(x1, x2);
+	return mid;
 }
 
 Segment Triangle::create_altitude(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
-	Point n, k, m;
-	k = p;
-	Triangle t = triangle_point_set1(n, k, m);
+	Point p1, p2, p3;
+	p2 = p;
+	Triangle t = triangle_point_shift1(p1, p2, p3);
 
 	// Calculate the equation of altitude from B
+	// Straight line H height, point h intersection of AC and H 
 	Line AC(t.A, t.C);
 	Vector np = AC.get_n();
 	Line X(t.A, np);
 	Line H = make_parallel_line(X, t.B);
-	Point Z = intersection(AC, H);
-	Segment L(t.B, Z);
-	return L;
+	Point h = intersection(AC, H);
+	Segment alt(t.B, h);
+	return alt;
 }
 
 Ray Triangle::create_bisector(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
-	Point n, k, m;
-	k = p;
-	Triangle t = triangle_point_set1(n, k, m);
+	Point p1, p2, p3;
+	p2 = p;
+	Triangle t = triangle_point_shift1(p1, p2, p3);
 
 	// Calculate the equation of bisector from B
 	double l = t.c / t.a;
