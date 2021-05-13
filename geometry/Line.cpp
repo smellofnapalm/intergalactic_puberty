@@ -82,7 +82,7 @@ int Line::check_halfplane(const Point& p)
 
 void Line::draw() const
 {
-	glBegin(GL_LINE);
+	glBegin(GL_LINES);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
 	glVertex2d((p0 - 5000*v).get_x(), (p0 - 5000*v).get_y());
@@ -233,7 +233,7 @@ bool Ray::is_on(const Point& p) const
 
 void Ray::draw() const
 {
-	glBegin(GL_LINE);
+	glBegin(GL_LINES);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
 	glVertex2d(p0.get_x(), p0.get_y());
@@ -270,7 +270,7 @@ bool Segment::is_on(const Point& p) const
 
 void Segment::draw() const
 {
-	glBegin(GL_LINE);
+	glBegin(GL_LINES);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
 	glVertex2d(p0.get_x(), p0.get_y());

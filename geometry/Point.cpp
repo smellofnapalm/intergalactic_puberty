@@ -87,13 +87,14 @@ Point& Point::operator=(const Point& p)
 
 void Point::draw() const
 {
-	glBegin(GL_POINT);
+	glEnable(GL_POINT_SMOOTH);
+	glPointSize(15);
+	glBegin(GL_POINTS);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
-	glPointSize(5);
 
 	glVertex2d(x, y);
-
+	glDisable(GL_POINT_SMOOTH);
 	glEnd();
 }
 

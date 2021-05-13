@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <string>
+#include "List.h"
 using namespace std;
 
 const vector<string> v =
@@ -12,11 +14,17 @@ const vector<string> v =
 	"Create a new polygon"
 };
 
-void create_point();
-void create_line();
-void create_triangle();
-void create_circle();
-void create_polygon();
+template<class T>
+void create_point(list<T>&);
+template<class T>
+void create_line(list<T>&);
+template<class T>
+void create_triangle(list<T>&);
+template<class T>
+void create_circle(list<T>&);
+template<class T>
+void create_polygon(list<T>&);
 
 int print_menu(vector<string> mas = v);
-void menu();
+template<class T>
+void menu(list<T>&);

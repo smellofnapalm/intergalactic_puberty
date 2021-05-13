@@ -1,10 +1,14 @@
-﻿#include "Polygon.h"
+﻿#pragma once
+
+#include "Polygon.h"
 #include "Triangle.h"
 #include "Line.h"
 #include "Circle.h"
 #include "Menu.h"
+#include "List.h"
 
-void create_point()
+template<class T>
+void create_point(list<T>& buffer)
 {
 	int x, y;
 	cout << endl;
@@ -12,9 +16,13 @@ void create_point()
 	cin >> x >> y;
 	Point p = Point(x, y);
 	cout << p << endl;
+
+	p.set_color({ 100, 100, 100 });
+	buffer.push_back(p);
 }
 
-void create_line()
+template<class T>
+void create_line(list<T>& buffer)
 {
 	Point p0, p1;
 	cout << "Enter two points of the line:\n";
@@ -30,9 +38,13 @@ void create_line()
 		return;
 	}
 	cout << l;
+
+	l.set_color({ 100, 100, 100 });
+	buffer.push_back(l);
 }
 
-void create_triangle()
+template<class T>
+void create_triangle(list<T>& buffer)
 {
 	cout << "You are creating the Triangle." << endl;
 	Point A, B, C;
@@ -51,9 +63,13 @@ void create_triangle()
 
 	Triangle triangle(A, B, C);
 	cout << triangle;
+
+	triangle.set_color({ 100, 100, 100 });
+	triangle.draw();
 }
 
-void create_circle()
+template<class T>
+void create_circle(list<T>& buffer)
 {
 	Point center;
 	double r, S, L;
@@ -75,9 +91,13 @@ void create_circle()
 	S = circle.get_area();
 	L = circle.get_length();
 	cout << "Circumference length = " << L << endl << "Area of a circle = " << S << endl;
+
+	circle.set_color({ 100, 100, 100 });
+	circle.draw();
 }
 
-void create_polygon()
+template<class T>
+void create_polygon(list<T>& buffer)
 {
 	int n;
 	cout << endl;
@@ -98,6 +118,9 @@ void create_polygon()
 		return;
 	}
 	cout << polygon;
+
+	polygon.set_color({ 100, 100, 100 });
+	polygon.draw();
 }
 
 int print_menu(vector<string> mas)
@@ -146,16 +169,17 @@ int print_menu(vector<string> mas)
 	return key;
 }
 
-void menu()
+template<class T>
+void menu(list<T> &buffer)
 {
 	while (true)
 	{
 		int key = print_menu();
-		if (key == 0) create_point();
-		else if (key == 1) create_line();
-		else if (key == 2) create_triangle();
-		else if (key == 3) create_circle();
-		else if (key == 4) create_polygon();
+		if (key == 0) create_point(buffer);
+		else if (key == 1) create_line(buffer);
+		else if (key == 2) create_triangle(buffer);
+		else if (key == 3) create_circle(buffer);
+		else if (key == 4) create_polygon(buffer);
 		else return;
 
 		char x;
