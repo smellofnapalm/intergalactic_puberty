@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(process_keys);
 	glutMouseFunc(process_click);
+	srand(time(NULL));
 	test();
 	glutMainLoop();
 }

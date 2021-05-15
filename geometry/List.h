@@ -25,6 +25,7 @@ template <class T>
 class list
 {
 public:
+	node<T>* cur = begin;
 	// getters
 	node<T>* get_begin() const { return begin; }
 	node<T>* get_end() const { return end; }
@@ -40,6 +41,9 @@ public:
 	// pop functions
 	T pop_front();
 	T pop_back();
+
+	// delete a certain node and returns its value
+	T pop_node(node<T>* del);
 
 	// operators
 	node<T>* operator[] (size_t index);
@@ -59,9 +63,10 @@ list<T>::~list()
 	node<T>* p = begin;
 	while (p != nullptr)
 	{
-		node<T>* cur = p->next;
+		node<T>* current = p->next;
+		if (p == cur) cur = nullptr;
 		delete p;
-		p = cur;
+		p = current;
 	}
 }
 
@@ -104,6 +109,7 @@ T list<T>::pop_front()
 		T val = begin->value;
 		node<T>* first = begin->next;
 		first->last = nullptr;
+		if (begin == cur) cur = nullptr;
 		delete begin;
 		begin = first;
 		size--;
@@ -121,9 +127,32 @@ T list<T>::pop_back()
 		T val = end->value;
 		node<T>* new_end = end->last;
 		new_end->next = nullptr;
+		if (end == cur) cur = nullptr;
 		delete end;
 		end = new_end;
 		size--;
+		return val;
+	}
+}
+
+template <class T>
+T list<T>::pop_node(node<T>* del)
+{
+	if (size == 0 || !del) 
+		throw std::exception("Current element is NULL!");
+
+	if (del == end) 
+		return pop_back();
+	else if (del == begin) 
+		return pop_front();
+	else
+	{
+		del->last->next = del->next;
+		del->next->last = del->last;
+		if (del == cur) cur = nullptr;
+		size--;
+		T val = del->value;
+		delete del;
 		return val;
 	}
 }

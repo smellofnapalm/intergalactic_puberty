@@ -23,11 +23,12 @@ ENTER_MODE mode = ENTER_MODE::LINE;
 
 void draw_list()
 {
-	srand(time(NULL));
 	node<Object*>* p = buffer.get_begin();
 	while (p)
 	{
-		p->value->set_color({ rand() % 256, rand() % 256, rand() % 256 });
+		if (p->value->get_color() == Color(0, 0, 0)) p->value->set_color({ rand() % 256, rand() % 256, rand() % 256 });
+		if (p == buffer.cur)
+			p->value->set_color({ 0, 0, 0 });
 		p->value->draw();
 		p = p->next;
 	}
@@ -62,11 +63,11 @@ void draw_coordinates(int step)
 
 void draw_function(double(*f)(double x), int step)
 {
-	glColor3b(rand() % 256, rand() % 256, rand() % 256);
 	Segment* p;
 	for (int x = -1000; x < 1000; x += step)
 	{
 		p = new Segment(Point(x, f(x)), Point(x + step, f(x + step)));
+		p->set_color(Color(rand() % 256, rand() % 256, rand() % 256));
 		p->draw();
 		delete p;
 	}
@@ -120,26 +121,35 @@ void process_keys(unsigned char key, int x, int y)
 
 		if (point_buffer.get_size() == 2)
 		{
-			if (mode == ENTER_MODE::LINE)
-				buffer.push_back(new Line(*point_buffer.pop_front(), *point_buffer.pop_front()));
-			else if (mode == ENTER_MODE::RAY)
-				buffer.push_back(new Ray(*point_buffer.pop_back(), *point_buffer.pop_back()));
-			else if (mode == ENTER_MODE::SEGMENT)
-				buffer.push_back(new Segment(*point_buffer.pop_front(), *point_buffer.pop_front()));
-			else if (mode == ENTER_MODE::CIRCLE)
+			try
 			{
-				Point center = *point_buffer.pop_front();
-				Point second_point = *point_buffer.pop_front();
-				double radius = dist(center, second_point);
-				buffer.push_back(new Circle(center, radius));
+				if (mode == ENTER_MODE::LINE)
+					buffer.push_back(new Line(*point_buffer.pop_front(), *point_buffer.pop_front()));
+				else if (mode == ENTER_MODE::RAY)
+					buffer.push_back(new Ray(*point_buffer.pop_back(), *point_buffer.pop_back()));
+				else if (mode == ENTER_MODE::SEGMENT)
+					buffer.push_back(new Segment(*point_buffer.pop_front(), *point_buffer.pop_front()));
+				else if (mode == ENTER_MODE::CIRCLE)
+				{
+					Point center = *point_buffer.pop_front();
+					Point second_point = *point_buffer.pop_front();
+					double radius = dist(center, second_point);
+					buffer.push_back(new Circle(center, radius));
+				}
 			}
+			catch (const exception&)
+			{ std::cout << "You can't create an object from two same points!\n"; }
 		}
 		else if (point_buffer.get_size() == 3)
 		{
 			Point A = *point_buffer.pop_front();
 			Point B = *point_buffer.pop_front();
 			Point C = *point_buffer.pop_front();
-			buffer.push_back(new Triangle(A, B, C));
+			try
+			{ buffer.push_back(new Triangle(A, B, C)); }
+			catch (const exception&)
+			{ std::cout << "You can't create this triangle!\n"; }
+
 		}
 		else
 		{
@@ -147,7 +157,12 @@ void process_keys(unsigned char key, int x, int y)
 			vector<Point> v(n);
 			for (size_t i = 0; i < n; i++)
 				v[i] = *point_buffer.pop_front();
-			buffer.push_back(new Polygon(v));
+			auto last = std::unique(v.begin(), v.end());
+			v.erase(last, v.end());
+			try
+			{ buffer.push_back(new Polygon(v)); }
+			catch (const exception&)
+			{ std::cout << "You can't create this polygon!\n"; }
 		}
 	}
 	else if (key == 'l' || key == 's' || key == 'r' || key == 'c')
@@ -155,18 +170,50 @@ void process_keys(unsigned char key, int x, int y)
 	else if (key == '-')
 	{
 		try
-		{
-			deleted_buffer.push_front(buffer.pop_back());
-		}
+		{ deleted_buffer.push_front(buffer.pop_back()); }
 		catch (const exception& ex)
-		{
-			std::cout << "There is no elements in buffer!\n";
-		}
+		{ std::cout << "There is no elements in buffer!\n"; }
 	}
 	else if (key == '=')
 	{
-		try { buffer.push_back(deleted_buffer.pop_front()); }
-		catch (const exception& ex) { std::cout << "There is no deleted elements in buffer!\n"; }
+		try 
+		{ buffer.push_back(deleted_buffer.pop_front()); }
+		catch (const exception& ex) 
+		{ std::cout << "There is no deleted elements in buffer!\n"; }
+	}
+	else if (key == 'd')
+	{
+		if (!buffer.cur)
+		{
+			if (buffer.get_size() != 0)
+				buffer.cur = buffer.get_begin();
+		}
+		else if (buffer.cur->next)
+			buffer.cur = buffer.cur->next;
+		else
+			buffer.cur = buffer.get_begin();
+	}
+	else if (key == 'a')
+	{
+		if (!buffer.cur)
+		{
+			if (buffer.get_size() != 0)
+				buffer.cur = buffer.get_end();
+		}
+		else if (buffer.cur->last)
+			buffer.cur = buffer.cur->last;
+		else
+			buffer.cur = buffer.get_end();
+	}
+	else if (key == BACKSPACE)
+	{
+		try
+		{
+			Object* val = buffer.pop_node(buffer.cur);
+			deleted_buffer.push_front(val);
+		}
+		catch (const exception& ex)
+		{ std::cout << ex.what() << std::endl; }
 	}
 	glutPostRedisplay();
 }
