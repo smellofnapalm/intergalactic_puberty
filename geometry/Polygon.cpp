@@ -65,7 +65,7 @@ void Polygon::set_convex()
 		Vector a, b;
 		a = Vector(points[(i + 1) % n].get_x() - points[i].get_x(), points[(i + 1) % n].get_y() - points[i].get_y());
 		b = Vector(points[(i - 1 + n) % n].get_x() - points[i].get_x(), points[(i - 1 + n) % n].get_y() - points[i].get_y());
-		if (vector_product(a, b) * last <= 0 && i > 0)
+		if (vector_product(a, b) * last < 0 && i > 0)
 		{
 			is_convex = false;
 			return;

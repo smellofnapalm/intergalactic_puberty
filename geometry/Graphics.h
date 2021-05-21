@@ -9,6 +9,7 @@
 #include "Circle.h"
 #include "Line.h"
 #include "Polygon.h"
+#include "Stack.h"
 
 /* Our functions to deal with objects */
 

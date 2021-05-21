@@ -4,6 +4,8 @@ list<Object*> buffer;
 list<Object*> deleted_buffer;
 list<Point*> point_buffer;
 
+Stack<Object*> stack;
+
 const unsigned char ESC = 27;
 const unsigned char ENTER = 13;
 const unsigned char BACKSPACE = 8;
@@ -38,6 +40,13 @@ void draw_list()
 		ptr->value->set_color({ rand() % 256, rand() % 256, rand() % 256 });
 		ptr->value->draw();
 		ptr = ptr->next;
+	}
+	while (!stack.is_empty())
+	{
+		Object* el = stack.top();
+		stack.pop();
+		el->set_color({ rand() % 256, rand() % 256, rand() % 256 });
+		el->draw();
 	}
 }
 
@@ -99,15 +108,15 @@ void Reshape(GLint w, GLint h)
 
 void test()
 {
-	buffer.push_back(new Circle(Point(500, 500), 200));
-	buffer.push_back(new Line(Point(0, 0), Point(500, 500)));
-	buffer.push_back(new Point(200, 100));
-	buffer.push_back(new Ray(Point(200, 400), Point(500, 500)));
-	buffer.push_back(new Segment(Point(400, 200), Point(500, 500)));
+	stack.push(new Circle(Point(500, 500), 200));
+	stack.push(new Line(Point(0, 0), Point(500, 500)));
+	stack.push(new Point(200, 100));
+	stack.push(new Ray(Point(200, 400), Point(500, 500)));
+	stack.push(new Segment(Point(400, 200), Point(500, 500)));
 	vector<Point> p = { Point(0, 0), Point(100, 0), Point(200, 200), Point(0, 200) };
-	buffer.push_back(new Polygon(p));
-	buffer.push_back(new Triangle(Point(500, 500), Point(600, 500), Point(500, 600)));
-	buffer.push_back(new Vector(Point(50, 100)));
+	stack.push(new Polygon(p));
+	stack.push(new Triangle(Point(500, 500), Point(600, 500), Point(500, 600)));
+	stack.push(new Vector(Point(50, 100)));
 }
 
 void process_keys(unsigned char key, int x, int y)
