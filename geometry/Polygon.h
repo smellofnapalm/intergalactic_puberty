@@ -47,6 +47,7 @@ public:
 	Ray create_bisector(const Point&);
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { for (int i = 0; i < points.size(); i++) points[i].shift_by_vector(p); *this = Polygon(points); }
 
 	friend Polygon convex_hull(const vector<Point>&);
 	friend Polygon convex_hull(const Polygon&);

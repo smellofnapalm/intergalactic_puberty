@@ -37,6 +37,7 @@ void Reshape(GLint w, GLint h);
 /* There we have event handlers (we handl mouse click and keyboard) */
 
 void process_keys(unsigned char key, int x, int y);
+void process_arrows(int key, int x, int y);
 void process_click(int button, int state, int x, int y);
 
 /*                                                                  */

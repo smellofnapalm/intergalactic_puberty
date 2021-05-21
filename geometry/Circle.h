@@ -43,6 +43,7 @@ public:
 	double distance_to_point(const Point&) const;
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Circle(_center + v, _r); }
 };
 
 

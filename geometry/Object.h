@@ -1,4 +1,5 @@
 #pragma once
+using namespace std;
 
 struct Color 
 { 
@@ -16,4 +17,5 @@ public:
 	void set_color(const Color& c) { color = c; }
 	Color get_color() const { return color; }
 	virtual void draw() const = 0;
+	virtual void shift_by_vector(const pair<double, double>&) = 0;
 };

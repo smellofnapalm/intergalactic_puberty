@@ -3,12 +3,18 @@
 list<Object*> buffer;
 list<Object*> deleted_buffer;
 list<Point*> point_buffer;
-
 Stack<Object*> stack;
 
 const unsigned char ESC = 27;
 const unsigned char ENTER = 13;
 const unsigned char BACKSPACE = 8;
+
+const int SHIFT = 10;
+const Vector UP_SHIFT = Vector(0, SHIFT);
+const Vector DOWN_SHIFT = -UP_SHIFT;
+const Vector RIGHT_SHIFT = Vector(10, 0);
+const Vector LEFT_SHIFT = -RIGHT_SHIFT;
+
 
 enum class ENTER_MODE
 {
@@ -223,6 +229,31 @@ void process_keys(unsigned char key, int x, int y)
 		}
 		catch (const exception& ex)
 		{ std::cout << ex.what() << std::endl; }
+	}
+	glutPostRedisplay();
+}
+
+void process_arrows(int key, int x, int y)
+{
+	if (key == GLUT_KEY_UP)
+	{
+		auto p = pair<double, double>(UP_SHIFT.get_x(), UP_SHIFT.get_y());
+		buffer.cur->value->shift_by_vector(p);
+	}
+	else if (key == GLUT_KEY_RIGHT)
+	{
+		auto p = pair<double, double>(RIGHT_SHIFT.get_x(), RIGHT_SHIFT.get_y());
+		buffer.cur->value->shift_by_vector(p);
+	}
+	else if (key == GLUT_KEY_DOWN)
+	{
+		auto p = pair<double, double>(DOWN_SHIFT.get_x(), DOWN_SHIFT.get_y());
+		buffer.cur->value->shift_by_vector(p);
+	}
+	else if (key == GLUT_KEY_LEFT)
+	{
+		auto p = pair<double, double>(LEFT_SHIFT.get_x(), LEFT_SHIFT.get_y());
+		buffer.cur->value->shift_by_vector(p);
 	}
 	glutPostRedisplay();
 }

@@ -57,6 +57,7 @@ public:
 	int check_halfplane(const Point&);
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector w = Vector(p.first, p.second); *this = Line(p0 + w, v); }
 };
 
 class Ray : public Line
@@ -78,6 +79,7 @@ public:
 	bool is_on(const Point&) const override;
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Ray(p0 + v, p1 + v); }
 };
 
 class Segment : public Line
@@ -105,4 +107,5 @@ public:
 	bool is_on(const Point&) const override;
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Segment(p0 + v, p1 + v); }
 };

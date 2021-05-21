@@ -70,6 +70,7 @@ public:
 
 	// Function for drawing triangle
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Triangle(A + v, B + v, C + v); }
 };
 
 // Check for points not on the same line
