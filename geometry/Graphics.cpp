@@ -189,8 +189,18 @@ void process_keys(unsigned char key, int x, int y)
 			{ std::cout << "You can't create this polygon!\n"; }
 		}
 	}
-	else if (key == 'l' || key == 's' || key == 'r' || key == 'c')
+	else if 
+		(key == 'l' || key == 'L' || key == 'ä' || key == 'Ä'
+		|| key == 's' || key == 'S' || key == 'û' || key == 'Û'
+		|| key == 'r' || key == 'R' || key == 'ê' || key == 'Ê'
+		|| key == 'c' || key == 'C' || key == 'ñ' || key == 'Ñ')
+	{
+		if (key == 'ä' || key == 'Ä' || key == 'L') key = 'l';
+		else if (key == 'û' || key == 'Û' || key == 'S') key = 's';
+		else if (key == 'R' || key == 'ê' || key == 'Ê') key = 'r';
+		else if (key == 'C' || key == 'ñ' || key == 'Ñ') key = 'c';
 		mode = (ENTER_MODE)key;
+	}
 	else if (key == '-')
 	{
 		try
@@ -205,7 +215,7 @@ void process_keys(unsigned char key, int x, int y)
 		catch (const exception& ex) 
 		{ std::cout << "There is no deleted elements in buffer!\n"; }
 	}
-	else if (key == 'd')
+	else if (key == 'd' || key == 'D' || key == (unsigned char)'â' || key == (unsigned char)'Â')
 	{
 		if (!buffer.cur)
 		{
@@ -217,7 +227,7 @@ void process_keys(unsigned char key, int x, int y)
 		else
 			buffer.cur = buffer.get_begin();
 	}
-	else if (key == 'a')
+	else if (key == 'a' || key == 'A' || key == (unsigned char)'ô' || key == (unsigned char)'Ô')
 	{
 		if (!buffer.cur)
 		{
@@ -239,7 +249,7 @@ void process_keys(unsigned char key, int x, int y)
 		catch (const exception& ex)
 		{ std::cout << ex.what() << std::endl; }
 	}
-	else if (key == 'f')
+	else if (key == 'f' || key == 'F' || key == (unsigned char)'à' || key == (unsigned char)'À')
 	{
 		if (buffer.cur == nullptr) return;
 		Object* obj = buffer.cur->value;

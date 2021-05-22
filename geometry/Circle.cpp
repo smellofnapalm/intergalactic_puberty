@@ -65,7 +65,6 @@ void Circle::draw() const
 
 	glColor3ub(line_loop_color.R, line_loop_color.G, line_loop_color.B);
 	int N = 500;
-	glVertex2f(_center.get_x(), _center.get_y());
 	for (int i = 0; i <= N; i++)
 	{
 		double angle = 2 * PI * i / N;

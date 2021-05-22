@@ -13,7 +13,7 @@ class Object
 {
 protected:
 	Color color = { 0, 0, 0 };
-	Color line_loop_color = { 150, 150, 150 };
+	Color line_loop_color = { 50, 50, 50 };
 	bool is_filled = true;
 public:
 	void set_color(const Color& c) { color = c; }
