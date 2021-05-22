@@ -35,8 +35,6 @@ void draw_list()
 	while (p)
 	{
 		if (p->value->get_color() == Color(0, 0, 0)) p->value->set_color({ rand() % 256, rand() % 256, rand() % 256 });
-		if (p == buffer.cur)
-			p->value->set_color({ 0, 0, 0 });
 		p->value->draw();
 		p = p->next;
 	}
@@ -46,6 +44,17 @@ void draw_list()
 		ptr->value->set_color({ rand() % 256, rand() % 256, rand() % 256 });
 		ptr->value->draw();
 		ptr = ptr->next;
+	}
+	if (buffer.cur)
+	{
+		p = buffer.cur;
+		bool filled = p->value->get_filled();
+		Color c = p->value->get_color();
+		p->value->set_color({ 0, 0, 0 });
+		p->value->set_filled(true);
+		p->value->draw();
+		p->value->set_filled(filled);
+		p->value->set_color(c);
 	}
 	while (!stack.is_empty())
 	{
@@ -95,8 +104,8 @@ void Display(void)
 	glClearColor(255, 255, 255, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	draw_coordinates();
-	draw_list();
 	draw_function(test_func);
+	draw_list();
 	glFinish();
 }
 
@@ -230,11 +239,20 @@ void process_keys(unsigned char key, int x, int y)
 		catch (const exception& ex)
 		{ std::cout << ex.what() << std::endl; }
 	}
+	else if (key == 'f')
+	{
+		if (buffer.cur == nullptr) return;
+		Object* obj = buffer.cur->value;
+		bool is_filled = obj->get_filled();
+		obj->set_filled(!is_filled);
+	}
+	else {}
 	glutPostRedisplay();
 }
 
 void process_arrows(int key, int x, int y)
 {
+	if (buffer.cur == nullptr) return;
 	if (key == GLUT_KEY_UP)
 	{
 		auto p = pair<double, double>(UP_SHIFT.get_x(), UP_SHIFT.get_y());

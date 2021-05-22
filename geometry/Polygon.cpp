@@ -100,9 +100,20 @@ void Polygon::rotate_polygon(double angle, const Point& p)
 
 void Polygon::draw() const
 {
-	glBegin(GL_POLYGON);
+	if (is_filled)
+	{
+		glBegin(GL_POLYGON);
 
-	glColor3ub(get_color().R, get_color().G, get_color().B);
+		glColor3ub(get_color().R, get_color().G, get_color().B);
+		for (int i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
+		glVertex2d(points[0].get_x(), points[0].get_y());
+
+		glEnd();
+	}
+
+	glBegin(GL_LINE_LOOP);
+
+	glColor3ub(line_loop_color.R, line_loop_color.G, line_loop_color.B);
 	for (int i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
 	glVertex2d(points[0].get_x(), points[0].get_y());
 

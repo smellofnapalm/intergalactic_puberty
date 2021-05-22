@@ -283,9 +283,21 @@ Ray Triangle::create_bisector(const Point& p)
 
 void Triangle::draw() const
 {
-	glBegin(GL_TRIANGLE_FAN);
+	if (is_filled)
+	{
+		glBegin(GL_TRIANGLE_FAN);
 
-	glColor3ub(get_color().R, get_color().G, get_color().B);
+		glColor3ub(get_color().R, get_color().G, get_color().B);
+		glVertex2d(A.get_x(), A.get_y());
+		glVertex2d(B.get_x(), B.get_y());
+		glVertex2d(C.get_x(), C.get_y());
+		glVertex2d(A.get_x(), A.get_y());
+
+		glEnd();
+	}
+
+	glBegin(GL_LINE_LOOP);
+	glColor3ub(line_loop_color.R, line_loop_color.G, line_loop_color.B);
 	glVertex2d(A.get_x(), A.get_y());
 	glVertex2d(B.get_x(), B.get_y());
 	glVertex2d(C.get_x(), C.get_y());

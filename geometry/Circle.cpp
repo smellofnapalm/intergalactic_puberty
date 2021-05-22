@@ -45,9 +45,25 @@ Line Circle::make_tangent_line(const Circle& circle, const Point& p)
 
 void Circle::draw() const
 {
-	glBegin(GL_POLYGON);
+	if (is_filled)
+	{
+		glBegin(GL_POLYGON);
 
-	glColor3ub(get_color().R, get_color().G, get_color().B);
+		glColor3ub(get_color().R, get_color().G, get_color().B);
+		int N = 500;
+		glVertex2f(_center.get_x(), _center.get_y());
+		for (int i = 0; i <= N; i++)
+		{
+			double angle = 2 * PI * i / N;
+			glVertex2f(_r * cos(angle) + _center.get_x(), _r * sin(angle) + _center.get_y());
+		}
+
+		glEnd();
+	}
+	
+	glBegin(GL_LINE_LOOP);
+
+	glColor3ub(line_loop_color.R, line_loop_color.G, line_loop_color.B);
 	int N = 500;
 	glVertex2f(_center.get_x(), _center.get_y());
 	for (int i = 0; i <= N; i++)
