@@ -6,6 +6,8 @@ list<Object*> deleted_buffer;
 list<Point*> point_buffer;
 Stack<Object*> stack;
 
+double scale = 1.0;
+
 const unsigned char ESC = 27;
 const unsigned char ENTER = 13;
 const unsigned char BACKSPACE = 8;
@@ -71,10 +73,10 @@ void draw_list()
 void draw_coordinates(int step)
 {
 	glLineWidth(1);
-	for (int x = -1000; x <= 1000; x += step)
+	for (int x = -1000*scale; x <= 1000*scale; x += step)
 	{
-		Line Y1 = Line(Point(x, 0), Point(x, step));
-		Line X1 = Line(Point(0, x), Point(step, x));
+		Line Y1 = Line(Point(x, 0), Point(x, scale*Height));
+		Line X1 = Line(Point(0, x), Point(scale*Width, x));
 		glColor4b(120, 120, 120, 0.1);
 		X1.draw();
 		Y1.draw();
@@ -104,6 +106,9 @@ double test_func(double x) { return 100 * sin(0.01 * x); }
 
 void Display(void)
 {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(-Center.get_x() * scale, Center.get_x() * scale, -Center.get_y() * scale, Center.get_y() * scale);
 	glClearColor(255, 255, 255, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	draw_coordinates();
@@ -117,7 +122,7 @@ void Reshape(GLint w, GLint h)
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(-Center.get_x(), Center.get_x(), -Center.get_y(), Center.get_y());
+	gluOrtho2D(-Center.get_x()*scale, Center.get_x()*scale, -Center.get_y()*scale, Center.get_y()*scale);
 	Height = h;
 	Width = w;
 	Center.set_x(Width / 2);
@@ -194,11 +199,11 @@ void process_keys(unsigned char key, int x, int y)
 		exit(0);
 	else if (key == ENTER)
 		process_enter();
-	else if 
+	else if
 		(key == 'l' || key == 'L' || key == 'ä' || key == 'Ä'
-		|| key == 's' || key == 'S' || key == 'û' || key == 'Û'
-		|| key == 'r' || key == 'R' || key == 'ê' || key == 'Ê'
-		|| key == 'c' || key == 'C' || key == 'ñ' || key == 'Ñ')
+			|| key == 's' || key == 'S' || key == 'û' || key == 'Û'
+			|| key == 'r' || key == 'R' || key == 'ê' || key == 'Ê'
+			|| key == 'c' || key == 'C' || key == 'ñ' || key == 'Ñ')
 	{
 		if (key == 'ä' || key == 'Ä' || key == 'L') key = 'l';
 		else if (key == 'û' || key == 'Û' || key == 'S') key = 's';
@@ -209,16 +214,24 @@ void process_keys(unsigned char key, int x, int y)
 	else if (key == CTRL_Z)
 	{
 		try
-		{ deleted_buffer.push_front(buffer.pop_back()); }
+		{
+			deleted_buffer.push_front(buffer.pop_back());
+		}
 		catch (const exception&)
-		{ std::cout << "There is no elements in buffer!\n"; }
+		{
+			std::cout << "There is no elements in buffer!\n";
+		}
 	}
 	else if (key == CTRL_Y)
 	{
-		try 
-		{ buffer.push_back(deleted_buffer.pop_front()); }
-		catch (const exception&) 
-		{ std::cout << "There is no deleted elements in buffer!\n"; }
+		try
+		{
+			buffer.push_back(deleted_buffer.pop_front());
+		}
+		catch (const exception&)
+		{
+			std::cout << "There is no deleted elements in buffer!\n";
+		}
 	}
 	else if (key == 'd' || key == 'D' || key == (unsigned char)'â' || key == (unsigned char)'Â')
 	{
@@ -227,9 +240,9 @@ void process_keys(unsigned char key, int x, int y)
 			if (buffer.get_size() != 0)
 				buffer.cur = buffer.get_begin();
 		}
-		else if (buffer.cur->next) 
+		else if (buffer.cur->next)
 			buffer.cur = buffer.cur->next;
-		else 
+		else
 			buffer.cur = buffer.get_begin();
 	}
 	else if (key == 'a' || key == 'A' || key == (unsigned char)'ô' || key == (unsigned char)'Ô')
@@ -253,7 +266,9 @@ void process_keys(unsigned char key, int x, int y)
 			buffer.cur = nullptr;
 		}
 		catch (const exception& ex)
-		{ std::cout << ex.what() << std::endl; }
+		{
+			std::cout << ex.what() << std::endl;
+		}
 	}
 	else if (key == 'f' || key == 'F' || key == (unsigned char)'à' || key == (unsigned char)'À')
 	{
@@ -262,6 +277,8 @@ void process_keys(unsigned char key, int x, int y)
 		bool is_filled = obj->get_filled();
 		obj->set_filled(!is_filled);
 	}
+	else if (key == '-') { if (scale >= 32) return;  scale *= 2; }
+	else if (key == '=') { if (scale <= 1.0 / 4) return; scale /= 2; }
 	else {}
 	glutPostRedisplay();
 }
@@ -296,7 +313,7 @@ void process_click(int button, int state, int x, int y)
 {
 	if (state == GLUT_DOWN && button == GLUT_LEFT_BUTTON)
 	{
-		point_buffer.push_back(new Point(x - Center.get_x(), Height - y - Center.get_y()));
+		point_buffer.push_back(new Point(scale*(x - Center.get_x()), scale*(Height - y - Center.get_y())));
 		glutPostRedisplay();
 	}
 }
