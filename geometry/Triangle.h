@@ -42,7 +42,6 @@ private:
 public:
 	Triangle(double, double, double, double, double, double);
 	Triangle(const Point &, const Point &, const Point &);
-	Triangle(vector<Point>);
 
 	Point getA() const { return A; }
 	Point getB() const { return B; }
@@ -65,11 +64,14 @@ public:
 	// For output
 	friend ostream& operator<<(ostream&, Triangle&);
 	
-
-	// Funcs for creating equations of bisector, altitude(height), midline
+	// Funcs for creating equations of bisector, altitude(height), midline, median
+	// Given point - begin of bisector, altitude or median
 	Ray create_bisector(const Point&);
 	Segment create_altitude(const Point&);
+	Segment create_median(const Point&);
+	// Given points lying on side parallel to needed midline
 	Segment create_midline(const Point&, const Point&);
+	
 
 	// Function for drawing triangle
 	void draw() const override;

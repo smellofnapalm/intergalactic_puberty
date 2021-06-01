@@ -23,14 +23,6 @@ Triangle::Triangle(const Point &X, const Point &Y, const Point &Z)
 	init();
 }
 
-Triangle::Triangle(vector<Point> Arr) 
-{
-	A = Arr[0],
-	B = Arr[1], 
-	C = Arr[2];
-	init();
-}
-
 void Triangle::init() {
 	set_sides();
 	set_perimeter();
@@ -279,6 +271,18 @@ Ray Triangle::create_bisector(const Point& p)
 	double y = (l * t.C.get_y() + t.A.get_y()) / (1 + l);
 	Ray L(t.B, Point(x, y));
 	return L;
+}
+
+Segment Triangle::create_median(const Point& p)
+{
+	// Same triangle but points will be shifted for formula
+	Point p1, p2, p3;
+	p2 = p;
+	Triangle t = triangle_point_shift1(p1, p2, p3);
+
+	// Middle of the side in front of given point p
+	Point x((t.A.get_x() + t.C.get_x()) / 2, (t.A.get_y() + t.C.get_y()) / 2);
+	return Segment(p, x);
 }
 
 void Triangle::draw() const
