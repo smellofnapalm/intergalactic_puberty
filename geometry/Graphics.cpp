@@ -1,5 +1,7 @@
 #include "Graphics.h"
+#include "Menu.h"
 #include <set>
+#include <typeinfo>
 
 list<Object*> buffer;
 list<Object*> deleted_buffer;
@@ -144,7 +146,16 @@ void test()
 
 void process_enter()
 {
-	if (point_buffer.get_size() == 0) return;
+	if (point_buffer.get_size() == 0)
+	{
+		if (!buffer.cur) return;
+
+		string type = typeid(*buffer.cur->value).name();
+		if (type == "class Triangle")
+		{
+			menu_triangle(buffer);
+		}
+	}
 	else if (point_buffer.get_size() == 1) buffer.push_back(new Point(*point_buffer.pop_back()));
 	else if (point_buffer.get_size() == 2)
 	{

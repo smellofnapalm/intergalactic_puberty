@@ -1,11 +1,9 @@
 #pragma once
 
 #include <stdlib.h>
+#include "glut/glut.h"
 #include <random>
 #include <time.h>
-#include "Menu.h"
-#include "List.h"
-#include "glut/glut.h"
 #include "Circle.h"
 #include "Line.h"
 #include "Polygon.h"

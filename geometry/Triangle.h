@@ -44,6 +44,9 @@ public:
 	Triangle(const Point &, const Point &, const Point &);
 	Triangle(vector<Point>);
 
+	Point getA() const { return A; }
+	Point getB() const { return B; }
+	Point getC() const { return C; }
 	string get_type() const { return type; };
 	double get_area() const { return S; };
 	double get_perimeter() const { return P; };
