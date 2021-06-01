@@ -5,6 +5,7 @@ struct Color
 { 
 	int R = 0, G = 0, B = 0; 
 	Color(int r, int g, int b) : R(r), G(g), B(b) {}
+	Color(int rgb) : R(rgb), G(rgb), B(rgb) {}
 	friend bool operator== (const Color& a, const Color& b)
 	{ return a.R == b.R && a.G == b.G && a.B == b.B; }
 };

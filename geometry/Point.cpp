@@ -72,6 +72,11 @@ Point operator-(const Point& a)
 	return Point(-a.x, -a.y);
 }
 
+bool operator<(const Point& a, const Point& b)
+{
+	return a.x < b.x;
+}
+
 double dist(const Point& a, const Point& b)
 {
 	return sqrt((a.get_x() - b.get_x()) * (a.get_x() - b.get_x()) +

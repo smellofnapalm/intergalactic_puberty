@@ -105,7 +105,7 @@ void Polygon::draw() const
 		glBegin(GL_POLYGON);
 
 		glColor3ub(get_color().R, get_color().G, get_color().B);
-		for (int i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
+		for (size_t i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
 		glVertex2d(points[0].get_x(), points[0].get_y());
 
 		glEnd();
@@ -114,8 +114,8 @@ void Polygon::draw() const
 	glBegin(GL_LINE_LOOP);
 
 	glColor3ub(line_loop_color.R, line_loop_color.G, line_loop_color.B);
-	for (int i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
-	glVertex2d(points[0].get_x(), points[0].get_y());
+	for (size_t i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
+	//glVertex2d(points[0].get_x(), points[0].get_y());
 
 	glEnd();
 }
@@ -147,7 +147,7 @@ ostream& operator<<(ostream& out, const Polygon& polygon)
 
 	out << "The size of polygon is " << polygon.points.size() << endl;
 	out << "The points of the polygon:\n";
-	for (int i = 0; i < polygon.points.size(); i++) 
+	for (size_t i = 0; i < polygon.points.size(); i++) 
 		out << polygon.points[i] << endl;
 	out << "The center of the polygon is " << polygon.get_center() << endl;
 	out << "The area of the polygon is " << polygon.get_area() << endl;
@@ -170,7 +170,7 @@ int Polygon::point_is_inside(const Point& p)
 	bool poz = false, neg = false;
 	double f;
 
-	for (int i = 0; i <= points.size(); ++i)
+	for (size_t i = 0; i <= points.size(); ++i)
 	{
 		if (i == points.size())
 			f = (points[i].get_x() - p.get_x() * (points[0].get_y() - points[i].get_y())) - ((points[0].get_x() - points[i].get_x()) * (points[i].get_y() - p.get_y()));
@@ -198,7 +198,7 @@ Ray Polygon::create_bisector(const Point& p)
 {
 	// Check for point p in polygon
 	int k = -1;
-	for (int i = 0; i < points.size(); ++i)
+	for (size_t i = 0; i < points.size(); ++i)
 	{
 		if (p == points[i]) k = i;
 		break;

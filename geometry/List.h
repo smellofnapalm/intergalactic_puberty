@@ -198,14 +198,12 @@ void list<T>::push_first(const T& val)
 template<class T>
 T list<T>::pop_first()
 {
-	if (size == 0)
+	if (size != 1)
 		throw std::exception("There is no elements in list");
-	if (size == 1)
-	{
-		T val = begin->value;
-		begin = nullptr;
-		end = nullptr;
-		size--;
-		return val;
-	}
+
+	T val = begin->value;
+	begin = nullptr;
+	end = nullptr;
+	size--;
+	return val;
 }

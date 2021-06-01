@@ -41,6 +41,7 @@ public:
 	friend Point operator*(double, const Point&);
 	friend Point operator-(const Point&, const Point&);
 	friend Point operator-(const Point&);
+	friend bool operator<(const Point&, const Point&);
 
 	friend double dist(const Point&, const Point&);
 

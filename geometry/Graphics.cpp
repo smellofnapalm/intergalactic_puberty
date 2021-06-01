@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include <set>
 
 list<Object*> buffer;
 list<Object*> deleted_buffer;
@@ -8,11 +9,13 @@ Stack<Object*> stack;
 const unsigned char ESC = 27;
 const unsigned char ENTER = 13;
 const unsigned char BACKSPACE = 8;
+const unsigned char CTRL_Z = 26;
+const unsigned char CTRL_Y = 25;
 
 const int SHIFT = 10;
 const Vector UP_SHIFT = Vector(0, SHIFT);
 const Vector DOWN_SHIFT = -UP_SHIFT;
-const Vector RIGHT_SHIFT = Vector(10, 0);
+const Vector RIGHT_SHIFT = Vector(SHIFT, 0);
 const Vector LEFT_SHIFT = -RIGHT_SHIFT;
 
 
@@ -34,7 +37,6 @@ void draw_list()
 	node<Object*>* p = buffer.get_begin();
 	while (p)
 	{
-		if (p->value->get_color() == Color(0, 0, 0)) p->value->set_color({ rand() % 256, rand() % 256, rand() % 256 });
 		p->value->draw();
 		p = p->next;
 	}
@@ -50,6 +52,7 @@ void draw_list()
 		p = buffer.cur;
 		bool filled = p->value->get_filled();
 		Color c = p->value->get_color();
+		if (c == Color(0, 0, 0)) c = Color(rand() % 256, rand() % 256, rand() % 256);
 		p->value->set_color({ 0, 0, 0 });
 		p->value->set_filled(true);
 		p->value->draw();
@@ -90,7 +93,7 @@ void draw_function(double(*f)(double x), int step)
 	Segment* p;
 	for (int x = -1000; x < 1000; x += step)
 	{
-		p = new Segment(Point(x, f(x)), Point(x + step, f(x + step)));
+		p = new Segment(Point(x, f(x)), Point(double(x) + double(step), f(double(x) + double(step))));
 		p->set_color(Color(rand() % 256, rand() % 256, rand() % 256));
 		p->draw();
 		delete p;
@@ -104,7 +107,7 @@ void Display(void)
 	glClearColor(255, 255, 255, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	draw_coordinates();
-	draw_function(test_func);
+	//draw_function(test_func);
 	draw_list();
 	glFinish();
 }
@@ -134,61 +137,63 @@ void test()
 	stack.push(new Vector(Point(50, 100)));
 }
 
+void process_enter()
+{
+	if (point_buffer.get_size() == 0) return;
+	else if (point_buffer.get_size() == 1) buffer.push_back(new Point(*point_buffer.pop_back()));
+	else if (point_buffer.get_size() == 2)
+	{
+		try
+		{
+			if (mode == ENTER_MODE::LINE)
+				buffer.push_back(new Line(*point_buffer.pop_front(), *point_buffer.pop_front()));
+			else if (mode == ENTER_MODE::RAY)
+				buffer.push_back(new Ray(*point_buffer.pop_back(), *point_buffer.pop_back()));
+			else if (mode == ENTER_MODE::SEGMENT)
+				buffer.push_back(new Segment(*point_buffer.pop_front(), *point_buffer.pop_front()));
+			else if (mode == ENTER_MODE::CIRCLE)
+			{
+				Point center = *point_buffer.pop_front();
+				Point second_point = *point_buffer.pop_front();
+				double radius = dist(center, second_point);
+				buffer.push_back(new Circle(center, radius));
+			}
+		}
+		catch (const exception&)
+		{ std::cout << "You can't create an object from two same points!\n"; }
+	}
+	else if (point_buffer.get_size() == 3)
+	{
+		Point A = *point_buffer.pop_front();
+		Point B = *point_buffer.pop_front();
+		Point C = *point_buffer.pop_front();
+		try
+		{ buffer.push_back(new Triangle(A, B, C)); }
+		catch (const exception&)
+		{ cout << "You can't create this triangle!\n"; }
+	}
+	else
+	{
+		size_t n = point_buffer.get_size();
+		set<Point> s;
+		vector<Point> v;
+		for (size_t i = 0; i < n; i++) s.insert(*point_buffer.pop_front());
+		for (const auto& point : s) v.push_back(point);
+		try
+		{ buffer.push_back(new Polygon(v)); }
+		catch (const exception&)
+		{ cout << "You can't create this polygon!\n"; }
+	}
+
+	if (buffer.get_end()) buffer.get_end()->value->set_color(Color(rand() % 200 + 55, rand() % 200 + 55, rand() % 200 + 55));
+}
+
 void process_keys(unsigned char key, int x, int y)
 {
 	if (key == ESC)
 		exit(0);
 	else if (key == ENTER)
-	{
-		if (point_buffer.get_size() < 2)
-			return;
-
-		if (point_buffer.get_size() == 2)
-		{
-			try
-			{
-				if (mode == ENTER_MODE::LINE)
-					buffer.push_back(new Line(*point_buffer.pop_front(), *point_buffer.pop_front()));
-				else if (mode == ENTER_MODE::RAY)
-					buffer.push_back(new Ray(*point_buffer.pop_back(), *point_buffer.pop_back()));
-				else if (mode == ENTER_MODE::SEGMENT)
-					buffer.push_back(new Segment(*point_buffer.pop_front(), *point_buffer.pop_front()));
-				else if (mode == ENTER_MODE::CIRCLE)
-				{
-					Point center = *point_buffer.pop_front();
-					Point second_point = *point_buffer.pop_front();
-					double radius = dist(center, second_point);
-					buffer.push_back(new Circle(center, radius));
-				}
-			}
-			catch (const exception&)
-			{ std::cout << "You can't create an object from two same points!\n"; }
-		}
-		else if (point_buffer.get_size() == 3)
-		{
-			Point A = *point_buffer.pop_front();
-			Point B = *point_buffer.pop_front();
-			Point C = *point_buffer.pop_front();
-			try
-			{ buffer.push_back(new Triangle(A, B, C)); }
-			catch (const exception&)
-			{ std::cout << "You can't create this triangle!\n"; }
-
-		}
-		else
-		{
-			size_t n = point_buffer.get_size();
-			vector<Point> v(n);
-			for (size_t i = 0; i < n; i++)
-				v[i] = *point_buffer.pop_front();
-			auto last = std::unique(v.begin(), v.end());
-			v.erase(last, v.end());
-			try
-			{ buffer.push_back(new Polygon(v)); }
-			catch (const exception&)
-			{ std::cout << "You can't create this polygon!\n"; }
-		}
-	}
+		process_enter();
 	else if 
 		(key == 'l' || key == 'L' || key == 'ä' || key == 'Ä'
 		|| key == 's' || key == 'S' || key == 'û' || key == 'Û'
@@ -201,18 +206,18 @@ void process_keys(unsigned char key, int x, int y)
 		else if (key == 'C' || key == 'ñ' || key == 'Ñ') key = 'c';
 		mode = (ENTER_MODE)key;
 	}
-	else if (key == '-')
+	else if (key == CTRL_Z)
 	{
 		try
 		{ deleted_buffer.push_front(buffer.pop_back()); }
-		catch (const exception& ex)
+		catch (const exception&)
 		{ std::cout << "There is no elements in buffer!\n"; }
 	}
-	else if (key == '=')
+	else if (key == CTRL_Y)
 	{
 		try 
 		{ buffer.push_back(deleted_buffer.pop_front()); }
-		catch (const exception& ex) 
+		catch (const exception&) 
 		{ std::cout << "There is no deleted elements in buffer!\n"; }
 	}
 	else if (key == 'd' || key == 'D' || key == (unsigned char)'â' || key == (unsigned char)'Â')
@@ -222,9 +227,9 @@ void process_keys(unsigned char key, int x, int y)
 			if (buffer.get_size() != 0)
 				buffer.cur = buffer.get_begin();
 		}
-		else if (buffer.cur->next)
+		else if (buffer.cur->next) 
 			buffer.cur = buffer.cur->next;
-		else
+		else 
 			buffer.cur = buffer.get_begin();
 	}
 	else if (key == 'a' || key == 'A' || key == (unsigned char)'ô' || key == (unsigned char)'Ô')
@@ -245,6 +250,7 @@ void process_keys(unsigned char key, int x, int y)
 		{
 			Object* val = buffer.pop_node(buffer.cur);
 			deleted_buffer.push_front(val);
+			buffer.cur = nullptr;
 		}
 		catch (const exception& ex)
 		{ std::cout << ex.what() << std::endl; }
