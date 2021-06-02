@@ -219,24 +219,19 @@ Triangle Triangle::triangle_point_shift1(Point& p1, Point& p2, Point& p3)
 
 Triangle Triangle::triangle_point_shift2(Point& p1, Point& p2, Point& p3)
 {
-	if (p1 == A && p2 == B || p1 == B && p2 == A) p3 = C;
-	else if (p1 == A && p2 == C || p1 == C && p2 == A) p3 = B;
-	else if (p1 == B && p2 == C || p1 == C && p2 == B) p3 = A;
+	if (p1 == A && p2 == B || p1 == B && p2 == A) { p1 = A; p2 = B; p3 = C; }
+	else if (p1 == A && p2 == C || p1 == C && p2 == A) { p1 = A; p2 = C; p3 = B; }
+	else if (p1 == B && p2 == C || p1 == C && p2 == B) { p1 = B; p2 = C; p3 = A; }
 	return Triangle(p1, p2, p3);
 }
 
 Segment Triangle::create_midline(const Point& point1, const Point& point2)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1, p2, p3;
-	p1 = point1, p2 = point2;
+	Point p1 = point1, p2 = point2, p3;
 	Triangle t = triangle_point_shift2(p1, p2, p3);
-	
-	// Calculate the equation of middle line BC
-	Point x1((t.A.get_x() + t.B.get_x()) / 2, (t.A.get_x() + t.B.get_x()) / 2);
-	Point x2((t.A.get_x() + t.B.get_x()) / 2, (t.A.get_x() + t.B.get_x()) / 2);
-	Segment mid(x1, x2);
-	return mid;
+	Point newA = p1, newB = p2, newC = p3;
+	return Segment(Segment(newC, newA).get_avr(), Segment(newC, newB).get_avr());
 }
 
 Segment Triangle::create_altitude(const Point& p)

@@ -234,7 +234,9 @@ void menu_triangle(list<T>& l)
 		{
 			"Make height 1", "Make height 2", "Make height 3",
 			"Make bisector 1", "Make bisector 2", "Make bisector 3",
-			"Make midline 1", "Make midline 2", "Make midline 3"
+			"Make midline 1", "Make midline 2", "Make midline 3",
+			"Make median 1", "Make median 2", "Make median 3",
+			"Exit"
 		};
 		int key = print_menu(v);
 		if (key == 0) l.push_back(new Segment(t->create_altitude(t->getA())));
@@ -243,7 +245,12 @@ void menu_triangle(list<T>& l)
 		else if (key == 3) l.push_back(new Ray(t->create_bisector(t->getA())));
 		else if (key == 4) l.push_back(new Ray(t->create_bisector(t->getB())));
 		else if (key == 5) l.push_back(new Ray(t->create_bisector(t->getC())));
-		else if (key == 6) l.push_back(new Segment(t->create_midline())
+		else if (key == 6) l.push_back(new Segment(t->create_midline(t->getB(), t->getC())));
+		else if (key == 7) l.push_back(new Segment(t->create_midline(t->getA(), t->getC())));
+		else if (key == 8) l.push_back(new Segment(t->create_midline(t->getA(), t->getB())));
+		else if (key == 9) l.push_back(new Segment(t->create_median(t->getA())));
+		else if (key == 10) l.push_back(new Segment(t->create_median(t->getB())));
+		else if (key == 11) l.push_back(new Segment(t->create_median(t->getC())));
 		else return;
 
 		char x;
