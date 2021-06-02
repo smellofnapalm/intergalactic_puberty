@@ -30,6 +30,8 @@ template<class T>
 void menu(list<T>&);
 template<class T>
 void menu_triangle(list<T>&);
+template<class T>
+void menu_polygon(list<T>&);
 
 #include "Polygon.h"
 #include "Triangle.h"
@@ -253,6 +255,31 @@ void menu_triangle(list<T>& l)
 		else if (key == 10) l.push_back(new Segment(t->create_median(t->getB())));
 		else if (key == 11) l.push_back(new Segment(t->create_median(t->getC())));
 		else if (key == 12) l.push_back(new Circle(t->create_incircle()));
+		else return;
+
+		char x;
+		cout << "Do you want to continue? (y/n):\n";
+		cin >> x;
+		if (x == 'y')
+			system("cls");
+		else
+			return;
+	}
+}
+
+template<class T>
+void menu_polygon(list<T>& l)
+{
+	Polygon* p = dynamic_cast<Polygon*>(l.cur->value);
+	size_t n = p->get_points().size();
+	vector<string> v;
+	for (size_t i = 1; i <= n; i++)
+		v.push_back("Make bisector " + to_string(i));
+	v.push_back("Exit");
+	while (true)
+	{
+		int key = print_menu(v);
+		if (key < n) l.push_back(new Ray(p->create_bisector(p->operator[](key))));
 		else return;
 
 		char x;

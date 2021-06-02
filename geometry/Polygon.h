@@ -38,6 +38,8 @@ public:
 	friend Polygon operator+(const Polygon&, const Vector&);
 	friend Polygon operator-(const Polygon&, const Vector&);
 
+	const Point operator[](size_t index) const { return points[index]; }
+
 	// Rotate polygon on some angle (counter-clockwise of course) with respect to certain point
 	void rotate_polygon(double, const Point&);
 

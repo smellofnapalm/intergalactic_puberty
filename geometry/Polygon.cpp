@@ -197,28 +197,19 @@ int Polygon::point_is_inside(const Point& p)
 Ray Polygon::create_bisector(const Point& p) 
 {
 	// Check for point p in polygon
-	int k = -1;
-	for (size_t i = 0; i < points.size(); ++i)
+	int k = -1, n = points.size();
+	for (size_t i = 0; i < n; i++)
 	{
-		if (p == points[i]) k = i;
-		break;
+		if (p == points[i])
+		{
+			k = i;
+			break;
+		}
 	}
-	
-	if (k == 0)
-	{
-		Triangle t(points[points.size() - 1], points[0], points[1]);
-		return t.create_bisector(p);
-	}
-	else if (k == points.size() - 1)
-	{
-		Triangle t(points[k - 1], points[k], points[0]);
-		return t.create_bisector(p);
-	}
-	else
-	{
-		Triangle t(points[k - 1], points[k], points[k + 1]);
-		return t.create_bisector(p);
-	}	
+	if (k == -1) 
+		throw "Point is not in polygon!";
+	Triangle t = Triangle(points[(k - 1 + n) % n], points[k], points[(k + 1) % n]);
+	return t.create_bisector(p);
 }
 
 // Realization is taken from
