@@ -2,6 +2,7 @@
 
 #include "Point.h"
 #include "Line.h"
+#include "Circle.h"
 
 class Triangle : public Object
 {
@@ -71,6 +72,8 @@ public:
 	Segment create_median(const Point&);
 	// Given points lying on side parallel to needed midline
 	Segment create_midline(const Point&, const Point&);
+
+	Circle create_incircle();
 	
 
 	// Function for drawing triangle

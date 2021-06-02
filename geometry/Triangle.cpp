@@ -234,6 +234,14 @@ Segment Triangle::create_midline(const Point& point1, const Point& point2)
 	return Segment(Segment(newC, newA).get_avr(), Segment(newC, newB).get_avr());
 }
 
+Circle Triangle::create_incircle()
+{
+	Line l1 = create_bisector(A);
+	Line l2 = create_bisector(B);
+	Point center = intersection(l1, l2);
+	return Circle(center, r);
+}
+
 Segment Triangle::create_altitude(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
