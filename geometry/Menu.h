@@ -275,11 +275,20 @@ void menu_polygon(list<T>& l)
 	vector<string> v;
 	for (size_t i = 1; i <= n; i++)
 		v.push_back("Make bisector " + to_string(i));
+	v.push_back("Rotate polygon for alpha degrees");
 	v.push_back("Exit");
 	while (true)
 	{
 		int key = print_menu(v);
 		if (key < n) l.push_back(new Ray(p->create_bisector(p->operator[](key))));
+		else if (key == n)
+		{
+			cout << "Enter degrees (from 0 to 360):\n";
+			double alpha;
+			cin >> alpha;
+			alpha *= (PI / 180);
+			p->rotate_polygon(alpha, p->get_center());
+		}
 		else return;
 
 		char x;

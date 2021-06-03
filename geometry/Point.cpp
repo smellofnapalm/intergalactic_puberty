@@ -74,7 +74,7 @@ Point operator-(const Point& a)
 
 bool operator<(const Point& a, const Point& b)
 {
-	return a.x < b.x;
+	return a.x + a.y < b.x + b.y;
 }
 
 double dist(const Point& a, const Point& b)
@@ -117,10 +117,11 @@ double vector_product(const Vector& a, const Vector& b)
 
 Vector Vector::rotate(const Vector& v, double angle, const Point& center)
 {
-	Vector new_v = v;
+	Vector new_v = v, temp;
 	new_v = new_v - center;
-	new_v.set_x(cos(angle) * new_v.get_x() - sin(angle) * new_v.get_y());
-	new_v.set_y(sin(angle) * new_v.get_x() + cos(angle) * new_v.get_y());
+	temp = new_v;
+	new_v.set_x(cos(angle) * temp.get_x() - sin(angle) * temp.get_y());
+	new_v.set_y(sin(angle) * temp.get_x() + cos(angle) * temp.get_y());
 	new_v = new_v + center;
 	return new_v;
 }

@@ -18,6 +18,9 @@ list<Point*> point_buffer;
 // Just a test stack, we don't use it in real work
 Stack<Object*> stack;
 
+// List of objects we use for menu
+list<Object*> menu_buffer;
+
 /*                                                                          */
 
 // Global scaling factor to zoom in or out 

@@ -85,8 +85,8 @@ void Line::draw() const
 	glBegin(GL_LINES);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
-	glVertex2d((p0 - 50000*v).get_x(), (p0 - 50000*v).get_y());
-	glVertex2d((p0 + 50000*v).get_x(), (p0 + 50000*v).get_y());
+	glVertex2d((p0 - 5000*v).get_x(), (p0 - 5000*v).get_y());
+	glVertex2d((p0 + 5000*v).get_x(), (p0 + 5000*v).get_y());
 
 	glEnd();
 }
