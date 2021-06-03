@@ -1,4 +1,5 @@
 #include "Triangle.h"
+#include <iomanip>
 
 bool points_check(const Point& A, const Point& B, const Point& C)
 {

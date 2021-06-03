@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Line.h"
+#include <vector>
 
 using namespace std;
 

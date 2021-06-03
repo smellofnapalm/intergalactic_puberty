@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Point.h"
 
 class Line : public Object

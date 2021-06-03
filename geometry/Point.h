@@ -1,15 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <map>
-#include <algorithm>
-#include <cmath>
-#include <iostream>
 #include <fstream>
-#include <iomanip>
-#include <conio.h>
-
 #include "Object.h"
 #include "glut/glut.h"
 

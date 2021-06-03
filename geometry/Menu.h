@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <conio.h>
 #include "List.h"
 using namespace std;
 
@@ -39,6 +40,7 @@ void menu_polygon(list<T>&);
 #include "Circle.h"
 #include "Menu.h"
 #include "List.h"
+#include <iostream>
 
 template<class T>
 void create_point(list<T>& buffer)

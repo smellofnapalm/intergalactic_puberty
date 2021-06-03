@@ -1,9 +1,5 @@
 #pragma once
 
-#include <exception>
-#include <map>
-#include <algorithm>
-#include <iostream>
 #include "Object.h"
 
 template <class T>

@@ -29,11 +29,7 @@ public:
 template<typename T>
 Stack<T>::Stack(size_t _capacity)
 {
-	if (_capacity == 0)
-		throw "Invalid size!";
-
 	T* new_arr = new T[_capacity];
-	delete[] arr;
 	arr = new_arr;
 
 	size = _capacity;
@@ -44,8 +40,16 @@ template<typename T>
 Stack<T>::Stack(const Stack& s)
 {
 	T* new_arr = new T[s.size];
-	for (size_t i = 0; i < s.used; i++)
-		new_arr[i] = s.arr[i];
+	try
+	{
+		for (size_t i = 0; i < s.used; i++)
+			new_arr[i] = s.arr[i];
+	}
+	catch(const exception&)
+	{
+		delete[] new_arr;
+		throw;
+	}
 
 	delete[] arr;
 	arr = new_arr;
