@@ -199,18 +199,14 @@ void process_enter()
 			else if (type == "class Segment")
 			{
 				Segment* s = dynamic_cast<Segment*>(buffer.cur->value);
-				cout << "Do you want to make segment bisector?(1/0)\n";
-				int x;
-				cin >> x;
-				if (x == 1) buffer.push_back(new Line(s->segment_bisection()));
-				else menu_buffer.push_back(buffer.cur->value);
+				buffer.push_back(new Line(s->segment_bisection()));
+				menu_buffer.push_back(buffer.cur->value);
+				cout << "Segment bisector has been built and segment was added to the menu buffer!\n";
 			}
 			else
 			{
-				cout << "Do you want to work with this object in menu?(1/0)\n";
-				int x;
-				cin >> x;
-				if (x == 1) menu_buffer.push_back(buffer.cur->value);
+				menu_buffer.push_back(buffer.cur->value);
+				cout << "Object has been added to the menu buffer!\n";
 			}
 		}
 		else if (menu_buffer.get_size() == 1)
@@ -239,7 +235,39 @@ void process_enter()
 				}
 				menu_point_line(buffer, p, l);
 			}
-			else {}
+			else if ((type == "class Line" && type1 == "class Line")
+				|| (type == "class Ray" && type1 == "class Ray")
+				|| (type == "class Segment" && type1 == "class Segment"))
+			{
+				Line* l = dynamic_cast<Line*>(menu_buffer.get_begin()->value);
+				Line* l1 = dynamic_cast<Line*>(buffer.cur->value);
+				if (are_parallel(*l, *l1)) cout << "Lines are parallel!\n";
+				else
+				{
+					Point p;
+					if (type == "class Line") p = intersection(*l, *l1);
+					else if (type == "class Ray")
+					{
+						Ray* r = dynamic_cast<Ray*>(menu_buffer.get_begin()->value);
+						Ray* r1 = dynamic_cast<Ray*>(buffer.cur->value);
+						p = ray_intersection(*r, *r1);
+						if (p == UNDEF) cout << "Intersection point doesn't exist!\n";
+					}
+					else if (type == "class Segment")
+					{
+						Segment* s = dynamic_cast<Segment*>(menu_buffer.get_begin()->value);
+						Segment* s1 = dynamic_cast<Segment*>(buffer.cur->value);
+						p = segment_intersection(*s, *s1);
+						if (p == UNDEF) cout << "Intersection point doesn't exits!\n";
+					}
+
+					if (p != UNDEF)
+					{
+						cout << "Intersection point is (" << p.get_x() << ", " << p.get_y() << ")\n";
+						buffer.push_back(new Point(p));
+					}
+				}
+			}
 			menu_buffer.pop_node(menu_buffer.get_begin());
 			cout << "Now menu buffer is empty!\n";
 
