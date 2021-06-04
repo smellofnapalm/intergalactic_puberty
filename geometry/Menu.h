@@ -242,7 +242,7 @@ void menu_triangle(list<T>& l, list<T>& buf)
 			"Make bisector 1", "Make bisector 2", "Make bisector 3",
 			"Make midline 1", "Make midline 2", "Make midline 3",
 			"Make median 1", "Make median 2", "Make median 3",
-			"Create incircle", "Add one more object",
+			"Create incircle", "Create circumscribed", "Add one more object",
 			"Exit"
 		};
 		int key = print_menu(v);
@@ -259,7 +259,8 @@ void menu_triangle(list<T>& l, list<T>& buf)
 		else if (key == 10) l.push_back(new Segment(t->create_median(t->getB())));
 		else if (key == 11) l.push_back(new Segment(t->create_median(t->getC())));
 		else if (key == 12) l.push_back(new Circle(t->create_incircle()));
-		else if (key == 13) buf.push_back(t);
+		else if (key == 13) l.push_back(new Circle(t->create_circumscribed()));
+		else if (key == 14) buf.push_back(t);
 		else return;
 
 		char x;

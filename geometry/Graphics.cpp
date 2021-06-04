@@ -289,6 +289,31 @@ void process_enter()
 					buffer.push_back(new Point(v[1]));
 				}
 			}
+			else if ((type == "class Point" && type1 == "class Circle")
+				|| (type == "class Circle" && type1 == "class Point"))
+			{
+				Point* p;
+				Circle* c;
+				if (type == "class Point")
+				{
+					p = dynamic_cast<Point*>(buffer.cur->value);
+					c = dynamic_cast<Circle*>(menu_buffer.get_begin()->value);
+				}
+				else
+				{
+					p = dynamic_cast<Point*>(menu_buffer.get_begin()->value);
+					c = dynamic_cast<Circle*>(buffer.cur->value);
+				}
+				int x = c->point_occurrence(*p);
+				if (x == 1)
+					cout << "Point is inside the circle and you can't make tangent line!\n";
+				else if (x == 0)
+				{
+					cout << "Point is on the circle and you can make a tangent line!\n";
+					Line line = Circle::make_tangent_line(*c, *p);
+					buffer.push_back(new Line(line));
+				}
+			}
 			menu_buffer.pop_node(menu_buffer.get_begin());
 			cout << "Now menu buffer is empty!\n";
 

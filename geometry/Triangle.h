@@ -73,9 +73,10 @@ public:
 	// Given points lying on side parallel to needed midline
 	Segment create_midline(const Point&, const Point&);
 
+	// Create incircle and curcumscribed circle of a triangle
 	Circle create_incircle();
+	Circle create_circumscribed();
 	
-
 	// Function for drawing triangle
 	void draw() const override;
 	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Triangle(A + v, B + v, C + v); }

@@ -6,6 +6,7 @@
 using namespace std;
 
 const double PI = 3.141592653589;
+const double EPS = 0.005;
 
 class Circle : public Object
 {
@@ -28,7 +29,7 @@ public:
 	// Returns -1 if the point is out of the circle
 	// Returns 0 if the point is on the circle
 	// Returns 1 if the point is inside the circle
-	int point_occurrence(const Point&, const Circle&) const;
+	int point_occurrence(const Point&) const;
 
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);

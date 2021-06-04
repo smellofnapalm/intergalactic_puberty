@@ -21,12 +21,14 @@ double Circle::get_area() const
 	return (PI * _r * _r);
 }
 
-int Circle::point_occurrence(const Point& p, const Circle& circle) const
+int Circle::point_occurrence(const Point& p) const
 {
 	double temp = 0;
-	temp = sqr((p.get_x() - circle._center.get_x())) 
-		+ sqr((p.get_y() - circle._center.get_y())) 
-		- sqr(circle.get_r());
+	temp = sqr((p.get_x() - _center.get_x())) 
+		+ sqr((p.get_y() - _center.get_y())) 
+		- sqr(get_r());
+
+	if (abs(temp) < EPS) temp = 0;
 
 	if (temp > 0) return -1;
 	if (temp < 0) return 1;

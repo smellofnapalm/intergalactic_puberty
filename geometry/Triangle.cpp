@@ -243,6 +243,18 @@ Circle Triangle::create_incircle()
 	return Circle(center, r);
 }
 
+Circle Triangle::create_circumscribed()
+{
+	Segment AB = Segment(A, B);
+	Segment AC = Segment(A, C);
+
+	Line bisector_AB = AB.segment_bisection();
+	Line bisector_AC = AC.segment_bisection();
+
+	Point center = intersection(bisector_AB, bisector_AC);
+	return Circle(center, R);
+}
+
 Segment Triangle::create_altitude(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
