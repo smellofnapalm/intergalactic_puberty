@@ -43,6 +43,7 @@ public:
 
 	friend bool are_parallel(const Line&, const Line&);
 	friend Line make_parallel_line(const Line&, const Point&);
+	friend Line make_perpendicular_line(const Line&, const Point&);
 	friend Point intersection(const Line&, const Line&);
 
 	// Check if the Point on the Line
@@ -103,6 +104,7 @@ public:
 	friend ostream& operator<< (ostream&, const Segment&);
 
 	friend Point segment_intersection(const Segment&, const Segment&);
+	Line segment_bisection();
 
 	// Check if the Point is on the Segment
 	bool is_on(const Point&) const override;

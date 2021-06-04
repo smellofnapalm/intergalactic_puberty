@@ -30,9 +30,11 @@ int print_menu(vector<string> mas = v);
 template<class T>
 void menu(list<T>&);
 template<class T>
-void menu_triangle(list<T>&);
+void menu_triangle(list<T>&, list<T>&);
 template<class T>
-void menu_polygon(list<T>&);
+void menu_polygon(list<T>&, list<T>&);
+template<class T>
+void menu_point_line(list<T>&, Point*&, Line*&);
 
 #include "Polygon.h"
 #include "Triangle.h"
@@ -229,7 +231,7 @@ void menu(list<T>& buffer)
 }
 
 template<class T>
-void menu_triangle(list<T>& l)
+void menu_triangle(list<T>& l, list<T>& buf)
 {
 	Triangle* t = dynamic_cast<Triangle*>(l.cur->value);
 	while (true)
@@ -240,7 +242,7 @@ void menu_triangle(list<T>& l)
 			"Make bisector 1", "Make bisector 2", "Make bisector 3",
 			"Make midline 1", "Make midline 2", "Make midline 3",
 			"Make median 1", "Make median 2", "Make median 3",
-			"Create incircle",
+			"Create incircle", "Add one more object",
 			"Exit"
 		};
 		int key = print_menu(v);
@@ -257,6 +259,7 @@ void menu_triangle(list<T>& l)
 		else if (key == 10) l.push_back(new Segment(t->create_median(t->getB())));
 		else if (key == 11) l.push_back(new Segment(t->create_median(t->getC())));
 		else if (key == 12) l.push_back(new Circle(t->create_incircle()));
+		else if (key == 13) buf.push_back(t);
 		else return;
 
 		char x;
@@ -270,7 +273,7 @@ void menu_triangle(list<T>& l)
 }
 
 template<class T>
-void menu_polygon(list<T>& l)
+void menu_polygon(list<T>& l, list<T>& buf)
 {
 	Polygon* p = dynamic_cast<Polygon*>(l.cur->value);
 	size_t n = p->get_points().size();
@@ -278,6 +281,7 @@ void menu_polygon(list<T>& l)
 	for (size_t i = 1; i <= n; i++)
 		v.push_back("Make bisector " + to_string(i));
 	v.push_back("Rotate polygon for alpha degrees");
+	v.push_back("Add one more object");
 	v.push_back("Exit");
 	while (true)
 	{
@@ -290,6 +294,41 @@ void menu_polygon(list<T>& l)
 			cin >> alpha;
 			alpha *= (PI / 180);
 			p->rotate_polygon(alpha, p->get_center());
+		}
+		else if (key == n + 1) buf.push_back(p);
+		else return;
+
+		char x;
+		cout << "Do you want to continue? (y/n):\n";
+		cin >> x;
+		if (x == 'y')
+			system("cls");
+		else
+			return;
+	}
+}
+
+template<class T>
+void menu_point_line(list<T>& l, Point*& point, Line*& line)
+{
+	while (true)
+	{
+		const vector<string> v =
+		{
+			"Make parallel line",
+			"Make perpendicular line",
+			"Check halfplane",
+			"Exit"
+		};
+		int key = print_menu(v);
+		if (key == 0) l.push_back(new Line(make_parallel_line(*line, *point)));
+		else if (key == 1) l.push_back(new Line(make_perpendicular_line(*line, *point)));
+		else if (key == 2)
+		{
+			int check = line->check_halfplane(*point);
+			if (check == 1) cout << "Point is above the line!\n";
+			else if (check == 0) cout << "Point is on the line!\n";
+			else if (check == -1) cout << "Point is beneath the line!\n";
 		}
 		else return;
 

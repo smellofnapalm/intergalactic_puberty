@@ -190,10 +190,60 @@ void process_enter()
 		if (!buffer.cur) return;
 
 		string type = typeid(*buffer.cur->value).name();
-		if (type == "class Triangle")
-			menu_triangle(buffer);
-		else if (type == "class Polygon")
-			menu_polygon(buffer);
+		if (menu_buffer.get_size() == 0)
+		{
+			if (type == "class Triangle")
+				menu_triangle(buffer, menu_buffer);
+			else if (type == "class Polygon")
+				menu_polygon(buffer, menu_buffer);
+			else if (type == "class Segment")
+			{
+				Segment* s = dynamic_cast<Segment*>(buffer.cur->value);
+				cout << "Do you want to make segment bisector?(1/0)\n";
+				int x;
+				cin >> x;
+				if (x == 1) buffer.push_back(new Line(s->segment_bisection()));
+				else menu_buffer.push_back(buffer.cur->value);
+			}
+			else
+			{
+				cout << "Do you want to work with this object in menu?(1/0)\n";
+				int x;
+				cin >> x;
+				if (x == 1) menu_buffer.push_back(buffer.cur->value);
+			}
+		}
+		else if (menu_buffer.get_size() == 1)
+		{
+			if (buffer.cur->value == menu_buffer.get_begin()->value)
+			{
+				cout << "You can't work with two same objects!\n";
+				return;
+			}
+			string type1 = typeid(*menu_buffer.get_begin()->value).name();
+
+			if ((type == "class Point" && (type1 == "class Line" || type1 == "class Segment" || type1 == "class Ray"))
+				|| ((type == "class Line" || type == "class Segment" || type == "class Ray") && type1 == "class Point"))
+			{
+				Line* l;
+				Point* p;
+				if (dynamic_cast<Line*>(menu_buffer.get_begin()->value))
+				{
+					l = dynamic_cast<Line*>(menu_buffer.get_begin()->value);
+					p = dynamic_cast<Point*>(buffer.cur->value);
+				}
+				else
+				{
+					l = dynamic_cast<Line*>(buffer.cur->value);
+					p = dynamic_cast<Point*>(menu_buffer.get_begin()->value);
+				}
+				menu_point_line(buffer, p, l);
+			}
+			else {}
+			menu_buffer.pop_node(menu_buffer.get_begin());
+			cout << "Now menu buffer is empty!\n";
+
+		}
 	}
 	// Create a point (and delete the last point from point_buffer)
 	else if (point_buffer.get_size() == 1) 

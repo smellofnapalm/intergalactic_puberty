@@ -126,6 +126,11 @@ Line make_parallel_line(const Line& l, const Point& p)
 	return Line(p, l.v);
 }
 
+Line make_perpendicular_line(const Line& l, const Point& p)
+{
+	return Line(p, l.n);
+}
+
 Point intersection(const Line& l1, const Line& l2)
 {
 	double x, y;
@@ -260,6 +265,11 @@ Segment::Segment(const Point& a, const Point& b)
 {
 	Line l = Line(a, b);
 	(*this) = Segment(l, a, b);
+}
+
+Line Segment::segment_bisection()
+{
+	return Line(avr_point, n);
 }
 
 bool Segment::is_on(const Point& p) const
