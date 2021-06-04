@@ -43,6 +43,7 @@ private:
 public:
 	Triangle(double, double, double, double, double, double);
 	Triangle(const Point &, const Point &, const Point &);
+	~Triangle() {}
 
 	Point getA() const { return A; }
 	Point getB() const { return B; }

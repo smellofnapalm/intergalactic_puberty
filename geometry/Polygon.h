@@ -51,6 +51,7 @@ public:
 	void draw() const override;
 	void shift_by_vector(const pair<double, double>& p) override { for (size_t i = 0; i < points.size(); i++) points[i].shift_by_vector(p); *this = Polygon(points); }
 
-	friend Polygon convex_hull(const vector<Point>&);
-	friend Polygon convex_hull(const Polygon&);
+	// Delete all points that lie on sides
+	static void delete_bad_points(vector<Point>&);
+	static vector<Point> convex_hull(const vector<Point>&);
 };

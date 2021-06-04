@@ -373,7 +373,8 @@ void process_enter()
 		// We want to work with only unique points (and only convex objects)
 		for (size_t i = 0; i < n; i++) s.insert(*point_buffer.pop_front());
 		for (const auto& point : s) v.push_back(point);
-
+		v = Polygon::convex_hull(v);
+		Polygon::delete_bad_points(v);
 		// If it is actually a triangle
 		if (v.size() == 3)
 		{

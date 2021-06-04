@@ -1,9 +1,9 @@
 #include "Polygon.h"
+#include "List.h"
 #include <iostream>
+#include <set>
 
 // POLYGON FUNCTIONS
-
-Polygon convex_hull(const vector<Point>& given);
 
 Polygon::Polygon(vector <Point> v)
 {
@@ -14,7 +14,7 @@ Polygon::Polygon(vector <Point> v)
 	set_convex();
 
 	// We use only convex polygons!
-	if (!is_convex) *this = convex_hull(*this);
+	if (!is_convex) points = convex_hull(points);
 	is_convex = true;
 
 	set_area();
@@ -66,7 +66,7 @@ void Polygon::set_convex()
 		Vector a, b;
 		a = Vector(points[(i + 1) % n].get_x() - points[i].get_x(), points[(i + 1) % n].get_y() - points[i].get_y());
 		b = Vector(points[(i - 1 + n) % n].get_x() - points[i].get_x(), points[(i - 1 + n) % n].get_y() - points[i].get_y());
-		if (vector_product(a, b) * last < 0 && i > 0)
+		if (vector_product(a, b) * last < 0 && i > 0 || vector_product(a, b) == 0)
 		{
 			is_convex = false;
 			return;
@@ -173,10 +173,14 @@ int Polygon::point_is_inside(const Point& p)
 
 	for (size_t i = 0; i <= points.size(); ++i)
 	{
+		double xi = points[i].get_x(), yi = points[i].get_y();
+		double x0 = points[0].get_x(), y0 = points[0].get_y();
+		double x_next = points[i + 1].get_x(), y_next = points[i + 1].get_y();
+		double x = p.get_x(), y = p.get_y();
 		if (i == points.size())
-			f = (points[i].get_x() - p.get_x() * (points[0].get_y() - points[i].get_y())) - ((points[0].get_x() - points[i].get_x()) * (points[i].get_y() - p.get_y()));
+			f = xi - x * (y0 - yi) - ((x0 - xi) * (yi - y));
 		else
-			f = (points[i].get_x() - p.get_x() * (points[i + 1].get_y() - points[i].get_y())) - ((points[i + 1].get_x() - points[i].get_x()) * (points[i].get_y() - p.get_y()));
+			f = xi - x * (y_next - y) - ((x_next - xi) * (yi - y));
 
 		if ((f > 0 && neg) || (f < 0 && poz)) return -1;
 		if (f == 0) {
@@ -213,9 +217,47 @@ Ray Polygon::create_bisector(const Point& p)
 	return t.create_bisector(p);
 }
 
+void Polygon::delete_bad_points(vector<Point>& points)
+{
+	list<Point> l;
+	for (int i = 0; i < points.size(); i++) l.push_back(points[i]);
+	bool flag = true;
+	while (flag)
+	{
+		flag = false;
+		int n = l.get_size();
+		if (n < 3) break;
+		node<Point>* p = l.get_begin();
+		while(p)
+		{
+			Segment s;
+			if (p == l.get_begin())
+				s = Segment(l.get_end()->value, p->next->value);
+			else if (p == l.get_end())
+				s = Segment(p->last->value, l.get_begin()->value);
+			else
+				s = Segment(p->last->value, p->next->value);
+			if (s.is_on(p->value))
+			{
+				l.pop_node(p);
+				flag = true;
+				break;
+			}
+			p = p->next;
+		}
+	}
+	points.clear();
+	node<Point>* p = l.get_begin();
+	while(p)
+	{
+		points.push_back(p->value);
+		p = p->next;
+	}
+}
+
 // Realization is taken from
 // https://habr.com/ru/post/144921/
-Polygon convex_hull(const vector<Point>& given)
+vector<Point> Polygon::convex_hull(const vector<Point>& given)
 {
 	int n = given.size();
 	Point* a = new Point[n];
@@ -256,10 +298,5 @@ Polygon convex_hull(const vector<Point>& given)
 			size--;
 		}
 	}
-	return Polygon(shell);
-}
-
-Polygon convex_hull(const Polygon& p)
-{
-	return convex_hull(p.get_points());
+	return shell;
 }

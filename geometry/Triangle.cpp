@@ -13,6 +13,10 @@ Triangle::Triangle(double x1, double y1, double x2, double y2, double x3, double
 	A = Point(x1, y1);
 	B = Point(x2, y2);
 	C = Point(x3, y3);
+	try
+	{ if (points_check(A, B, C)) throw exception("Invalid triangle!"); }
+	catch (const exception&)
+	{ throw; }
 	init();
 }
 
@@ -21,6 +25,10 @@ Triangle::Triangle(const Point &X, const Point &Y, const Point &Z)
 	A = X, 
 	B = Y, 
 	C = Z;
+	try
+	{ if (points_check(A, B, C)) throw exception("Invalid triangle!"); }
+	catch (const exception&)
+	{ throw; }
 	init();
 }
 

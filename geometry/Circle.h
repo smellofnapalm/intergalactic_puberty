@@ -6,7 +6,7 @@
 using namespace std;
 
 const double PI = 3.141592653589;
-const double EPS = 0.005;
+const double EPS = 0.0005;
 
 class Circle : public Object
 {
@@ -45,7 +45,8 @@ public:
 	double distance_to_point(const Point&) const;
 
 	void draw() const override;
-	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Circle(_center + v, _r); }
+	void shift_by_vector(const pair<double, double>& p) override 
+	{ Vector v = Vector(p.first, p.second); *this = Circle(_center + v, _r); }
 };
 
 
