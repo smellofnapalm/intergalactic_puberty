@@ -268,6 +268,27 @@ void process_enter()
 					}
 				}
 			}
+			else if (type == "class Circle" && type1 == "class Circle")
+			{
+				Circle* c = dynamic_cast<Circle*>(menu_buffer.get_begin()->value);
+				Circle* c1 = dynamic_cast<Circle*>(buffer.cur->value);
+				vector<Point> v = circles_intersection(*c, *c1);
+				if (v.size() == 0) cout << "Circles don't intersect!\n";
+				else if (v.size() == 1)
+				{
+					cout << "Circles touch at one point!\n";
+					cout << "This point is(" << v[0].get_x() << ", " << v[0].get_y() << ")\n";
+					buffer.push_back(new Point(v[0]));
+				}
+				else if (v.size() == 2)
+				{
+					cout << "Circles intersect at two points!\n";
+					cout << "The first point is " << v[0] << endl;
+					cout << "The secon point is " << v[1] << endl;
+					buffer.push_back(new Point(v[0]));
+					buffer.push_back(new Point(v[1]));
+				}
+			}
 			menu_buffer.pop_node(menu_buffer.get_begin());
 			cout << "Now menu buffer is empty!\n";
 

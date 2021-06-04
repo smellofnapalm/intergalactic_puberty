@@ -48,7 +48,7 @@ istream& operator>>(istream& in, Point& p)
 
 ostream& operator<<(ostream& out, const Point& p)
 {
-	out << p.x << " " << p.y;
+	out << "(" << p.x << ", " << p.y << ")";
 	return out;
 }
 
