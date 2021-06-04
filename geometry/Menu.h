@@ -260,7 +260,7 @@ void menu_triangle(list<T>& l, list<T>& buf)
 		else if (key == 11) l.push_back(new Segment(t->create_median(t->getC())));
 		else if (key == 12) l.push_back(new Circle(t->create_incircle()));
 		else if (key == 13) l.push_back(new Circle(t->create_circumscribed()));
-		else if (key == 14) buf.push_back(t);
+		else if (key == 14) { buf.push_back(t); return; }
 		else return;
 
 		char x;
@@ -296,7 +296,7 @@ void menu_polygon(list<T>& l, list<T>& buf)
 			alpha *= (PI / 180);
 			p->rotate_polygon(alpha, p->get_center());
 		}
-		else if (key == n + 1) buf.push_back(p);
+		else if (key == n + 1) { buf.push_back(p); return; }
 		else return;
 
 		char x;

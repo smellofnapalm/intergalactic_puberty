@@ -319,6 +319,7 @@ void process_enter()
 					vector<Line> v = Circle::make_tangent_line(*c, *p);
 					buffer.push_back(new Line(v[0]));
 					buffer.push_back(new Line(v[1]));
+					cout << "Distance from the point to the circle is " << c->distance_to_point(*p) << endl;
 				}
 			}
 			menu_buffer.pop_node(menu_buffer.get_begin());
