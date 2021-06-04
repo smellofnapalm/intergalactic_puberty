@@ -39,7 +39,7 @@ public:
 	friend vector<Point> circles_intersection(const Circle&, const Circle&);
 
 	// Make a tangent line to a circle in a certain point
-	static Line make_tangent_line(const Circle&, const Point&);
+	static vector<Line> make_tangent_line(const Circle&, const Point&);
 
 	// Calculate the distance from given point to circle
 	double distance_to_point(const Point&) const;

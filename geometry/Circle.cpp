@@ -35,14 +35,31 @@ int Circle::point_occurrence(const Point& p) const
 	return 0;
 }
 
-Line Circle::make_tangent_line(const Circle& circle, const Point& p)
+vector<Line> Circle::make_tangent_line(const Circle& circle, const Point& p)
 {
 	double x0 = circle.get_center().get_x();
 	double y0 = circle.get_center().get_y();
 	double x1 = p.get_x();
 	double y1 = p.get_y();
 	double r = circle.get_r();
-	return Line(x1 - x0, y1 - y0, -x1 * x0 - y1 * y0 + x0 * x0 + y0 * y0 - r * r);
+	int x = circle.point_occurrence(p);
+	vector<Line> vec;
+	if (x == 0)
+	{
+		Line l = Line(x1 - x0, y1 - y0, -x1 * x0 - y1 * y0 + x0 * x0 + y0 * y0 - r * r);
+		vec.push_back(l);
+	}
+	else if (x == -1)
+	{
+		Segment PO = Segment(circle._center, p);
+		Point H = PO.get_avr();
+		double r = dist(H, circle._center);
+		Circle c = Circle(H, r);
+		vector<Point> v = circles_intersection(c, circle);
+		vec.push_back(Line(v[0], p));
+		vec.push_back(Line(v[1], p));
+	}
+	return vec;
 }
 
 void Circle::draw() const

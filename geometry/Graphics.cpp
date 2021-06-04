@@ -310,8 +310,15 @@ void process_enter()
 				else if (x == 0)
 				{
 					cout << "Point is on the circle and you can make a tangent line!\n";
-					Line line = Circle::make_tangent_line(*c, *p);
+					Line line = Circle::make_tangent_line(*c, *p)[0];
 					buffer.push_back(new Line(line));
+				}
+				else if (x == -1)
+				{
+					cout << "Point is out of the circle and we have 2 tangent lines!\n";
+					vector<Line> v = Circle::make_tangent_line(*c, *p);
+					buffer.push_back(new Line(v[0]));
+					buffer.push_back(new Line(v[1]));
 				}
 			}
 			menu_buffer.pop_node(menu_buffer.get_begin());
