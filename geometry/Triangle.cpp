@@ -1,8 +1,10 @@
 #include "Triangle.h"
 #include <iomanip>
+#include <algorithm>
 
 bool points_check(const Point& A, const Point& B, const Point& C)
 {
+	if (A == B || A == C || B == C) return true;
 	Line L(A, B);
 	// Check for C in AB Line
 	return L.is_on(C);
@@ -218,16 +220,18 @@ int Triangle::point_is_inside(const Point& p) const
 	else return -1;
 }
 
-Triangle Triangle::triangle_point_shift1(Point& p1, Point& p2, Point& p3)
+Triangle Triangle::triangle_point_shift1(const Point& p2)
 {
+	Point p1, p3;
 	if (p2 == A) p1 = B, p3 = C;
 	else if (p2 == B) p1 = A, p3 = C;
 	else if (p2 == C) p1 = A, p3 = B;
 	return Triangle(p1, p2, p3);
 }
 
-Triangle Triangle::triangle_point_shift2(Point& p1, Point& p2, Point& p3)
+Triangle Triangle::triangle_point_shift2(Point& p1, Point& p2)
 {
+	Point p3;
 	if (p1 == A && p2 == B || p1 == B && p2 == A) { p1 = A; p2 = B; p3 = C; }
 	else if (p1 == A && p2 == C || p1 == C && p2 == A) { p1 = A; p2 = C; p3 = B; }
 	else if (p1 == B && p2 == C || p1 == C && p2 == B) { p1 = B; p2 = C; p3 = A; }
@@ -237,9 +241,9 @@ Triangle Triangle::triangle_point_shift2(Point& p1, Point& p2, Point& p3)
 Segment Triangle::create_midline(const Point& point1, const Point& point2)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1 = point1, p2 = point2, p3;
-	Triangle t = triangle_point_shift2(p1, p2, p3);
-	Point newA = p1, newB = p2, newC = p3;
+	Point p1 = point1, p2 = point2;
+	Triangle t = triangle_point_shift2(p1, p2);
+	Point newA = t.A, newB = t.B, newC = t.C;
 	return Segment(Segment(newC, newA).get_avr(), Segment(newC, newB).get_avr());
 }
 
@@ -266,9 +270,7 @@ Circle Triangle::create_circumscribed()
 Segment Triangle::create_altitude(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1, p2, p3;
-	p2 = p;
-	Triangle t = triangle_point_shift1(p1, p2, p3);
+	Triangle t = triangle_point_shift1(p);
 
 	// Calculate the equation of altitude from B
 	// Straight line H height, point h intersection of AC and H 
@@ -284,9 +286,7 @@ Segment Triangle::create_altitude(const Point& p)
 Ray Triangle::create_bisector(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1, p2, p3;
-	p2 = p;
-	Triangle t = triangle_point_shift1(p1, p2, p3);
+	Triangle t = triangle_point_shift1(p);
 
 	// Calculate the equation of bisector from B
 	double l = t.c / t.a;
@@ -300,9 +300,7 @@ Ray Triangle::create_bisector(const Point& p)
 Segment Triangle::create_median(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1, p2, p3;
-	p2 = p;
-	Triangle t = triangle_point_shift1(p1, p2, p3);
+	Triangle t = triangle_point_shift1(p);
 
 	// Middle of the side in front of given point p
 	Point x((t.A.get_x() + t.C.get_x()) / 2, (t.A.get_y() + t.C.get_y()) / 2);

@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="Documentation.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="List.h" />
