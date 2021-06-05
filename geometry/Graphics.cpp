@@ -21,6 +21,9 @@ Stack<Object*> stack;
 // List of objects we use for menu
 list<Object*> menu_buffer;
 
+// List of three circles from GUI
+list<Circle*> GUI_buffer;
+
 /*                                                                          */
 
 // Global scaling factor to zoom in or out 
@@ -63,14 +66,20 @@ Point Center = { Width / 2.0, Height / 2.0 };
 // Current enter mode
 ENTER_MODE mode = ENTER_MODE::LINE;
 
+//Current color for new objects
+Color cur_color = { rand() % 200 + 56, rand() % 200 + 56, rand() % 200 + 56 };
+
 void draw_list()
 {
+	// Draw all objects from buffer
 	node<Object*>* p = buffer.get_begin();
 	while (p)
 	{
 		p->value->draw();
 		p = p->next;
 	}
+
+	// Draw all points from buffer
 	node<Point*>* ptr = point_buffer.get_begin();
 	while (ptr)
 	{
@@ -78,18 +87,23 @@ void draw_list()
 		ptr->value->draw();
 		ptr = ptr->next;
 	}
+
+	// Draw current object
 	if (buffer.cur)
 	{
 		p = buffer.cur;
 		bool filled = p->value->get_filled();
 		Color c = p->value->get_color();
-		if (c == Color(0, 0, 0)) c = Color(rand() % 256, rand() % 256, rand() % 256);
+		if (c == Color(0, 0, 0)) c = cur_color;
 		p->value->set_color({ 0, 0, 0 });
 		p->value->set_filled(true);
 		p->value->draw();
+
 		p->value->set_filled(filled);
 		p->value->set_color(c);
 	}
+
+	// Draw stack (only once)
 	while (!stack.is_empty())
 	{
 		Object* el = stack.top();
@@ -131,6 +145,58 @@ void draw_function(double(*f)(double x), int step)
 	}
 }
 
+void draw_GUI()
+{
+	const double shift = 300;
+	Point p0 = { scale * -Width / 2, scale * Height / 2 };
+	Point p1 = p0 + Point(scale * shift, 0);
+	Point p2 = p1 + Point(0, -scale * shift / 2);
+	Point p3 = p2 + Point(-scale * shift, 0);
+	Polygon fill({ p0, p1, p2, p3 });
+	fill.set_color({ 60, 60, 60 });
+	fill.draw();
+
+	if (GUI_buffer.get_size() == 0)
+	{
+		// Red circle
+		Circle r({ scale * -Width / 2 + scale * shift / 6, (p0.get_y() + p3.get_y()) / 2 }, scale * shift / 24);
+		r.set_color({ 20, 0, 0 });
+		r.draw();
+
+		//Green circle
+		Circle g({ scale * -Width / 2 + 3 * scale * shift / 6, (p0.get_y() + p3.get_y()) / 2 }, scale * shift / 24);
+		g.set_color({ 0, 20, 0 });
+		g.draw();
+
+		//Blue circle
+		Circle b({ scale * -Width / 2 + 5 * scale * shift / 6, (p0.get_y() + p3.get_y()) / 2 }, scale * shift / 24);
+		b.set_color({ 0, 0, 20 });
+		b.draw();
+
+		GUI_buffer.push_back(new Circle(r));
+		GUI_buffer.push_back(new Circle(g));
+		GUI_buffer.push_back(new Circle(b));
+	}
+	else
+	{
+		GUI_buffer[0]->value->set_center({ scale * -Width / 2 + scale * shift / 6, (p0.get_y() + p3.get_y()) / 2 });
+		GUI_buffer[1]->value->set_center({ scale * -Width / 2 + 3 * scale * shift / 6, (p0.get_y() + p3.get_y()) / 2 });
+		GUI_buffer[2]->value->set_center({ scale * -Width / 2 + 5 * scale * shift / 6, (p0.get_y() + p3.get_y()) / 2 });
+		/*double r0 = GUI_buffer[0]->value->get_r();
+		double r1 = GUI_buffer[1]->value->get_r();
+		double r2 = GUI_buffer[2]->value->get_r();
+		GUI_buffer[0]->value->set_r(scale * r0);
+		GUI_buffer[1]->value->set_r(scale * r1);
+		GUI_buffer[2]->value->set_r(scale * r2); */
+		GUI_buffer.get_begin()->value->draw();
+		GUI_buffer.get_begin()->next->value->draw();
+		GUI_buffer.get_end()->value->draw();
+	}
+	cur_color.R = GUI_buffer[0]->value->get_color().R;
+	cur_color.G = GUI_buffer[1]->value->get_color().G;
+	cur_color.B = GUI_buffer[2]->value->get_color().B;
+}
+
 double test_func(double x) { return 100 * sin(0.01 * x); }
 
 void Display(void)
@@ -149,6 +215,9 @@ void Display(void)
 
 	// Draws all objects from out buffer
 	draw_list();
+
+	// It should be above all other objects
+	draw_GUI();
 
 	glFinish();
 }
@@ -188,6 +257,7 @@ void process_enter()
 	if (point_buffer.get_size() == 0)
 	{
 		if (!buffer.cur) return;
+		buffer.cur->value->set_color(cur_color);
 
 		string type = typeid(*buffer.cur->value).name();
 		if (menu_buffer.get_size() == 0)
@@ -403,10 +473,8 @@ void process_enter()
 		}
 	}
 
-	// I want random color to be bright (because selection color is black)
-	Color random_color = Color(rand() % 200 + 55, rand() % 200 + 55, rand() % 200 + 55);
 	if (buffer.get_end()) 
-		buffer.get_end()->value->set_color(random_color);
+		buffer.get_end()->value->set_color(cur_color);
 }
 
 void process_keys(unsigned char key, int x, int y)
@@ -504,9 +572,23 @@ void process_keys(unsigned char key, int x, int y)
 		obj->set_filled(!is_filled);
 	}
 	// Zoom out (hardcoded restriction to zoom more than in 32 times - begin problems with graphics)
-	else if (key == '-') { if (scale >= 32) return;  scale *= 2; }
+	else if (key == '-') 
+	{ 
+		if (scale >= 32) return; 
+		GUI_buffer[0]->value->set_r(GUI_buffer[0]->value->get_r() * 2);
+		GUI_buffer[1]->value->set_r(GUI_buffer[1]->value->get_r() * 2);
+		GUI_buffer[2]->value->set_r(GUI_buffer[2]->value->get_r() * 2);
+		scale *= 2;
+	}
 	// Zoom in (problems begin even with smaller scales)
-	else if (key == '=') { if (scale <= 1.0 / 4) return; scale /= 2; }
+	else if (key == '=') 
+	{ 
+		if (scale <= 1.0 / 4) return; 
+		scale /= 2; 
+		GUI_buffer[0]->value->set_r(GUI_buffer[0]->value->get_r() / 2);
+		GUI_buffer[1]->value->set_r(GUI_buffer[1]->value->get_r() / 2);
+		GUI_buffer[2]->value->set_r(GUI_buffer[2]->value->get_r() / 2);
+	}
 	else {}
 	glutPostRedisplay();
 }
@@ -543,9 +625,40 @@ void process_arrows(int key, int x, int y)
 
 void process_click(int button, int state, int x, int y)
 {
+	x = scale * (x - Center.get_x());
+	y = scale * (Height - y - Center.get_y());
+
 	if (state == GLUT_DOWN && button == GLUT_LEFT_BUTTON)
 	{
-		point_buffer.push_back(new Point(scale*(x - Center.get_x()), scale*(Height - y - Center.get_y())));
+		if (GUI_buffer[0]->value->point_occurrence({ double(x), double(y) }) == 1)
+		{
+			double coef = 0.2*scale;
+			double r = GUI_buffer[0]->value->get_r();
+			double red = GUI_buffer[0]->value->get_color().R;
+			GUI_buffer[0]->value->set_color({ int(1.15 * red) % 256, 0, 0 });
+			red = GUI_buffer[0]->value->get_color().R;
+			GUI_buffer[0]->value->set_r(coef * red);
+		}
+		else if (GUI_buffer[1]->value->point_occurrence({ double(x), double(y) }) == 1)
+		{
+			double coef = 0.2*scale;
+			double g = GUI_buffer[1]->value->get_r();
+			double green = GUI_buffer[1]->value->get_color().G;
+			GUI_buffer[1]->value->set_color({ 0, int(1.15 * green) % 256, 0 });
+			green = GUI_buffer[1]->value->get_color().G;
+			GUI_buffer[1]->value->set_r(coef * green);
+		}
+		else if (GUI_buffer[2]->value->point_occurrence({ double(x), double(y) }) == 1)
+		{
+			double coef = 0.2*scale;
+			double b = GUI_buffer[2]->value->get_r();
+			double blue = GUI_buffer[2]->value->get_color().B;
+			GUI_buffer[2]->value->set_color({ 0, 0, int(1.15 * blue) % 256, });
+			blue = GUI_buffer[2]->value->get_color().B;
+			GUI_buffer[2]->value->set_r(coef * blue);
+		}
+		else
+			point_buffer.push_back(new Point(x, y));
 		glutPostRedisplay();
 	}
 }

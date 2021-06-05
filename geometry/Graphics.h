@@ -19,9 +19,12 @@ void draw_list();
 // With step = 100 (by default)
 void draw_coordinates(int step = 100);
 
-// It draw an interpolation of this function
+// It draws an interpolation of this function
 // With step = 10 (by default)
 void draw_function(double(*f)(double x), int step = 10);
+
+// It draws GUI for using color change
+void draw_GUI();
 
 /*                                    */
 
