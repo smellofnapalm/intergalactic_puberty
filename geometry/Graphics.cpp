@@ -434,7 +434,13 @@ void process_keys(unsigned char key, int x, int y)
 	else if (key == CTRL_Z)
 	{
 		try
-		{ deleted_buffer.push_front(buffer.pop_back()); }
+		{ 
+			Object* last_object = buffer.pop_back();
+			// It deleted object is in menu, then delete it from menu
+			if (menu_buffer.get_size() == 1 && last_object == menu_buffer.get_begin()->value)
+				menu_buffer.pop_node(menu_buffer.get_begin());
+			deleted_buffer.push_front(buffer.pop_back()); 
+		}
 		catch (const exception&)
 		{ std::cout << "There is no elements in buffer!\n"; }
 	}
@@ -478,6 +484,9 @@ void process_keys(unsigned char key, int x, int y)
 		try
 		{
 			Object* val = buffer.pop_node(buffer.cur);
+			// It current object is in menu, delete it from menu also
+			if (menu_buffer.get_size() == 1 && val == menu_buffer.get_begin()->value)
+				menu_buffer.pop_node(menu_buffer.get_begin());
 			deleted_buffer.push_front(val);
 			buffer.cur = nullptr;
 		}

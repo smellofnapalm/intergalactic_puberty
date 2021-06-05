@@ -52,6 +52,7 @@ public:
 	void shift_by_vector(const pair<double, double>& p) override { for (size_t i = 0; i < points.size(); i++) points[i].shift_by_vector(p); *this = Polygon(points); }
 
 	// Delete all points that lie on sides
+	// <!> USE IT ONLY AFTER convex_hull to have points in right order!
 	static void delete_bad_points(vector<Point>&);
 	static vector<Point> convex_hull(const vector<Point>&);
 };
