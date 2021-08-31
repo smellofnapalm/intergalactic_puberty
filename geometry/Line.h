@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Point.h"
 
 class Line : public Object
@@ -42,6 +43,7 @@ public:
 
 	friend bool are_parallel(const Line&, const Line&);
 	friend Line make_parallel_line(const Line&, const Point&);
+	friend Line make_perpendicular_line(const Line&, const Point&);
 	friend Point intersection(const Line&, const Line&);
 
 	// Check if the Point on the Line
@@ -57,6 +59,7 @@ public:
 	int check_halfplane(const Point&);
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector w = Vector(p.first, p.second); *this = Line(p0 + w, v); }
 };
 
 class Ray : public Line
@@ -78,6 +81,7 @@ public:
 	bool is_on(const Point&) const override;
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Ray(p0 + v, p1 + v); }
 };
 
 class Segment : public Line
@@ -100,9 +104,11 @@ public:
 	friend ostream& operator<< (ostream&, const Segment&);
 
 	friend Point segment_intersection(const Segment&, const Segment&);
+	Line segment_bisection();
 
 	// Check if the Point is on the Segment
 	bool is_on(const Point&) const override;
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Segment(p0 + v, p1 + v); }
 };

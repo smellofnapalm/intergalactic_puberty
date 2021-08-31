@@ -1,7 +1,10 @@
 #include "Triangle.h"
+#include <iomanip>
+#include <algorithm>
 
 bool points_check(const Point& A, const Point& B, const Point& C)
 {
+	if (A == B || A == C || B == C) return true;
 	Line L(A, B);
 	// Check for C in AB Line
 	return L.is_on(C);
@@ -12,6 +15,10 @@ Triangle::Triangle(double x1, double y1, double x2, double y2, double x3, double
 	A = Point(x1, y1);
 	B = Point(x2, y2);
 	C = Point(x3, y3);
+	try
+	{ if (points_check(A, B, C)) throw exception("Invalid triangle!"); }
+	catch (const exception&)
+	{ throw; }
 	init();
 }
 
@@ -20,14 +27,10 @@ Triangle::Triangle(const Point &X, const Point &Y, const Point &Z)
 	A = X, 
 	B = Y, 
 	C = Z;
-	init();
-}
-
-Triangle::Triangle(vector<Point> Arr) 
-{
-	A = Arr[0],
-	B = Arr[1], 
-	C = Arr[2];
+	try
+	{ if (points_check(A, B, C)) throw exception("Invalid triangle!"); }
+	catch (const exception&)
+	{ throw; }
 	init();
 }
 
@@ -217,42 +220,57 @@ int Triangle::point_is_inside(const Point& p) const
 	else return -1;
 }
 
-Triangle Triangle::triangle_point_shift1(Point& p1, Point& p2, Point& p3)
+Triangle Triangle::triangle_point_shift1(const Point& p2)
 {
+	Point p1, p3;
 	if (p2 == A) p1 = B, p3 = C;
 	else if (p2 == B) p1 = A, p3 = C;
 	else if (p2 == C) p1 = A, p3 = B;
 	return Triangle(p1, p2, p3);
 }
 
-Triangle Triangle::triangle_point_shift2(Point& p1, Point& p2, Point& p3)
+Triangle Triangle::triangle_point_shift2(Point& p1, Point& p2)
 {
-	if (p1 == A && p2 == B || p1 == B && p2 == A) p3 = C;
-	else if (p1 == A && p2 == C || p1 == C && p2 == A) p3 = B;
-	else if (p1 == B && p2 == C || p1 == C && p2 == B) p3 = A;
+	Point p3;
+	if (p1 == A && p2 == B || p1 == B && p2 == A) { p1 = A; p2 = B; p3 = C; }
+	else if (p1 == A && p2 == C || p1 == C && p2 == A) { p1 = A; p2 = C; p3 = B; }
+	else if (p1 == B && p2 == C || p1 == C && p2 == B) { p1 = B; p2 = C; p3 = A; }
 	return Triangle(p1, p2, p3);
 }
 
 Segment Triangle::create_midline(const Point& point1, const Point& point2)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1, p2, p3;
-	p1 = point1, p2 = point2;
-	Triangle t = triangle_point_shift2(p1, p2, p3);
-	
-	// Calculate the equation of middle line BC
-	Point x1((t.A.get_x() + t.B.get_x()) / 2, (t.A.get_x() + t.B.get_x()) / 2);
-	Point x2((t.A.get_x() + t.B.get_x()) / 2, (t.A.get_x() + t.B.get_x()) / 2);
-	Segment mid(x1, x2);
-	return mid;
+	Point p1 = point1, p2 = point2;
+	Triangle t = triangle_point_shift2(p1, p2);
+	Point newA = t.A, newB = t.B, newC = t.C;
+	return Segment(Segment(newC, newA).get_avr(), Segment(newC, newB).get_avr());
+}
+
+Circle Triangle::create_incircle()
+{
+	Line l1 = create_bisector(A);
+	Line l2 = create_bisector(B);
+	Point center = intersection(l1, l2);
+	return Circle(center, r);
+}
+
+Circle Triangle::create_circumscribed()
+{
+	Segment AB = Segment(A, B);
+	Segment AC = Segment(A, C);
+
+	Line bisector_AB = AB.segment_bisection();
+	Line bisector_AC = AC.segment_bisection();
+
+	Point center = intersection(bisector_AB, bisector_AC);
+	return Circle(center, R);
 }
 
 Segment Triangle::create_altitude(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1, p2, p3;
-	p2 = p;
-	Triangle t = triangle_point_shift1(p1, p2, p3);
+	Triangle t = triangle_point_shift1(p);
 
 	// Calculate the equation of altitude from B
 	// Straight line H height, point h intersection of AC and H 
@@ -268,9 +286,7 @@ Segment Triangle::create_altitude(const Point& p)
 Ray Triangle::create_bisector(const Point& p)
 {
 	// Same triangle but points will be shifted for formula
-	Point p1, p2, p3;
-	p2 = p;
-	Triangle t = triangle_point_shift1(p1, p2, p3);
+	Triangle t = triangle_point_shift1(p);
 
 	// Calculate the equation of bisector from B
 	double l = t.c / t.a;
@@ -281,11 +297,33 @@ Ray Triangle::create_bisector(const Point& p)
 	return L;
 }
 
+Segment Triangle::create_median(const Point& p)
+{
+	// Same triangle but points will be shifted for formula
+	Triangle t = triangle_point_shift1(p);
+
+	// Middle of the side in front of given point p
+	Point x((t.A.get_x() + t.C.get_x()) / 2, (t.A.get_y() + t.C.get_y()) / 2);
+	return Segment(p, x);
+}
+
 void Triangle::draw() const
 {
-	glBegin(GL_TRIANGLE_FAN);
+	if (is_filled)
+	{
+		glBegin(GL_TRIANGLE_FAN);
 
-	glColor3ub(get_color().R, get_color().G, get_color().B);
+		glColor3ub(get_color().R, get_color().G, get_color().B);
+		glVertex2d(A.get_x(), A.get_y());
+		glVertex2d(B.get_x(), B.get_y());
+		glVertex2d(C.get_x(), C.get_y());
+		glVertex2d(A.get_x(), A.get_y());
+
+		glEnd();
+	}
+
+	glBegin(GL_LINE_LOOP);
+	glColor3ub(line_loop_color.R, line_loop_color.G, line_loop_color.B);
 	glVertex2d(A.get_x(), A.get_y());
 	glVertex2d(B.get_x(), B.get_y());
 	glVertex2d(C.get_x(), C.get_y());

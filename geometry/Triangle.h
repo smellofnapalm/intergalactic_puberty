@@ -2,6 +2,11 @@
 
 #include "Point.h"
 #include "Line.h"
+#include "Circle.h"
+
+// CHECK THIS FUNCTION RESULT BEFORE CREATING TRIANGLE!
+// Check for points not on the same line
+bool points_check(const Point&, const Point&, const Point&);
 
 class Triangle : public Object
 {
@@ -37,13 +42,16 @@ private:
 	void set_type();
 
 	// Create triangle with given 1 or 2 points for calculating equations
-	Triangle triangle_point_shift1(Point& n, Point& k, Point& m);
-	Triangle triangle_point_shift2(Point& n, Point& k, Point& m);
+	Triangle triangle_point_shift1(const Point&);
+	Triangle triangle_point_shift2(Point&, Point&);
 public:
 	Triangle(double, double, double, double, double, double);
 	Triangle(const Point &, const Point &, const Point &);
-	Triangle(vector<Point>);
+	~Triangle() {}
 
+	Point getA() const { return A; }
+	Point getB() const { return B; }
+	Point getC() const { return C; }
 	string get_type() const { return type; };
 	double get_area() const { return S; };
 	double get_perimeter() const { return P; };
@@ -62,17 +70,22 @@ public:
 	// For output
 	friend ostream& operator<<(ostream&, Triangle&);
 	
-
-	// Funcs for creating equations of bisector, altitude(height), midline
+	// Funcs for creating equations of bisector, altitude(height), midline, median
+	// Given point - begin of bisector, altitude or median
 	Ray create_bisector(const Point&);
 	Segment create_altitude(const Point&);
+	Segment create_median(const Point&);
+	// Given points lying on side parallel to needed midline
 	Segment create_midline(const Point&, const Point&);
 
+	// Create incircle and curcumscribed circle of a triangle
+	Circle create_incircle();
+	Circle create_circumscribed();
+	
 	// Function for drawing triangle
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { Vector v = Vector(p.first, p.second); *this = Triangle(A + v, B + v, C + v); }
 };
 
-// Check for points not on the same line
-bool points_check(const Point&, const Point&, const Point&);
 // Check for rectangular triangle
 bool rectangular_check(double, double, double);

@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Line.h"
+#include <vector>
 
 using namespace std;
 
 const double PI = 3.141592653589;
+const double EPS = 0.0005;
 
 class Circle : public Object
 {
@@ -27,7 +29,7 @@ public:
 	// Returns -1 if the point is out of the circle
 	// Returns 0 if the point is on the circle
 	// Returns 1 if the point is inside the circle
-	int point_occurrence(const Point&, const Circle&) const;
+	int point_occurrence(const Point&) const;
 
 	friend istream& operator>> (istream&, Circle&);
 	friend ostream& operator<< (ostream&, const Circle&);
@@ -37,12 +39,14 @@ public:
 	friend vector<Point> circles_intersection(const Circle&, const Circle&);
 
 	// Make a tangent line to a circle in a certain point
-	static Line make_tangent_line(const Circle&, const Point&);
+	static vector<Line> make_tangent_line(const Circle&, const Point&);
 
 	// Calculate the distance from given point to circle
 	double distance_to_point(const Point&) const;
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override 
+	{ Vector v = Vector(p.first, p.second); *this = Circle(_center + v, _r); }
 };
 
 

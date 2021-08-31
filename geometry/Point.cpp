@@ -48,7 +48,7 @@ istream& operator>>(istream& in, Point& p)
 
 ostream& operator<<(ostream& out, const Point& p)
 {
-	out << p.x << " " << p.y;
+	out << "(" << p.x << ", " << p.y << ")";
 	return out;
 }
 
@@ -72,6 +72,11 @@ Point operator-(const Point& a)
 	return Point(-a.x, -a.y);
 }
 
+bool operator<(const Point& a, const Point& b)
+{
+	return a.x + a.y < b.x + b.y;
+}
+
 double dist(const Point& a, const Point& b)
 {
 	return sqrt((a.get_x() - b.get_x()) * (a.get_x() - b.get_x()) +
@@ -87,13 +92,14 @@ Point& Point::operator=(const Point& p)
 
 void Point::draw() const
 {
-	glBegin(GL_POINT);
+	glEnable(GL_POINT_SMOOTH);
+	glPointSize(15);
+	glBegin(GL_POINTS);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
-	glPointSize(5);
 
 	glVertex2d(x, y);
-
+	glDisable(GL_POINT_SMOOTH);
 	glEnd();
 }
 
@@ -111,10 +117,11 @@ double vector_product(const Vector& a, const Vector& b)
 
 Vector Vector::rotate(const Vector& v, double angle, const Point& center)
 {
-	Vector new_v = v;
+	Vector new_v = v, temp;
 	new_v = new_v - center;
-	new_v.set_x(cos(angle) * new_v.get_x() - sin(angle) * new_v.get_y());
-	new_v.set_y(sin(angle) * new_v.get_x() + cos(angle) * new_v.get_y());
+	temp = new_v;
+	new_v.set_x(cos(angle) * temp.get_x() - sin(angle) * temp.get_y());
+	new_v.set_y(sin(angle) * temp.get_x() + cos(angle) * temp.get_y());
 	new_v = new_v + center;
 	return new_v;
 }

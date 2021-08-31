@@ -1,8 +1,9 @@
 #include "Polygon.h"
+#include "List.h"
+#include <iostream>
+#include <set>
 
 // POLYGON FUNCTIONS
-
-Polygon convex_hull(const vector<Point>& given);
 
 Polygon::Polygon(vector <Point> v)
 {
@@ -13,7 +14,7 @@ Polygon::Polygon(vector <Point> v)
 	set_convex();
 
 	// We use only convex polygons!
-	if (!is_convex) *this = convex_hull(*this);
+	if (!is_convex) points = convex_hull(points);
 	is_convex = true;
 
 	set_area();
@@ -65,7 +66,7 @@ void Polygon::set_convex()
 		Vector a, b;
 		a = Vector(points[(i + 1) % n].get_x() - points[i].get_x(), points[(i + 1) % n].get_y() - points[i].get_y());
 		b = Vector(points[(i - 1 + n) % n].get_x() - points[i].get_x(), points[(i - 1 + n) % n].get_y() - points[i].get_y());
-		if (vector_product(a, b) * last <= 0 && i > 0)
+		if (vector_product(a, b) * last < 0 && i > 0 || vector_product(a, b) == 0)
 		{
 			is_convex = false;
 			return;
@@ -100,11 +101,22 @@ void Polygon::rotate_polygon(double angle, const Point& p)
 
 void Polygon::draw() const
 {
-	glBegin(GL_POLYGON);
+	if (is_filled)
+	{
+		glBegin(GL_POLYGON);
 
-	glColor3ub(get_color().R, get_color().G, get_color().B);
-	for (int i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
-	glVertex2d(points[0].get_x(), points[0].get_y());
+		glColor3ub(get_color().R, get_color().G, get_color().B);
+		for (size_t i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
+		glVertex2d(points[0].get_x(), points[0].get_y());
+
+		glEnd();
+	}
+
+	glBegin(GL_LINE_LOOP);
+
+	glColor3ub(line_loop_color.R, line_loop_color.G, line_loop_color.B);
+	for (size_t i = 0; i < points.size(); i++) glVertex2d(points[i].get_x(), points[i].get_y());
+	//glVertex2d(points[0].get_x(), points[0].get_y());
 
 	glEnd();
 }
@@ -136,7 +148,7 @@ ostream& operator<<(ostream& out, const Polygon& polygon)
 
 	out << "The size of polygon is " << polygon.points.size() << endl;
 	out << "The points of the polygon:\n";
-	for (int i = 0; i < polygon.points.size(); i++) 
+	for (size_t i = 0; i < polygon.points.size(); i++) 
 		out << polygon.points[i] << endl;
 	out << "The center of the polygon is " << polygon.get_center() << endl;
 	out << "The area of the polygon is " << polygon.get_area() << endl;
@@ -159,12 +171,16 @@ int Polygon::point_is_inside(const Point& p)
 	bool poz = false, neg = false;
 	double f;
 
-	for (int i = 0; i <= points.size(); ++i)
+	for (size_t i = 0; i <= points.size(); ++i)
 	{
+		double xi = points[i].get_x(), yi = points[i].get_y();
+		double x0 = points[0].get_x(), y0 = points[0].get_y();
+		double x_next = points[i + 1].get_x(), y_next = points[i + 1].get_y();
+		double x = p.get_x(), y = p.get_y();
 		if (i == points.size())
-			f = (points[i].get_x() - p.get_x() * (points[0].get_y() - points[i].get_y())) - ((points[0].get_x() - points[i].get_x()) * (points[i].get_y() - p.get_y()));
+			f = xi - x * (y0 - yi) - ((x0 - xi) * (yi - y));
 		else
-			f = (points[i].get_x() - p.get_x() * (points[i + 1].get_y() - points[i].get_y())) - ((points[i + 1].get_x() - points[i].get_x()) * (points[i].get_y() - p.get_y()));
+			f = xi - x * (y_next - y) - ((x_next - xi) * (yi - y));
 
 		if ((f > 0 && neg) || (f < 0 && poz)) return -1;
 		if (f == 0) {
@@ -186,33 +202,62 @@ int Polygon::point_is_inside(const Point& p)
 Ray Polygon::create_bisector(const Point& p) 
 {
 	// Check for point p in polygon
-	int k = -1;
-	for (int i = 0; i < points.size(); ++i)
+	int k = -1, n = points.size();
+	for (size_t i = 0; i < n; i++)
 	{
-		if (p == points[i]) k = i;
-		break;
+		if (p == points[i])
+		{
+			k = i;
+			break;
+		}
 	}
-	
-	if (k == 0)
+	if (k == -1) 
+		throw "Point is not in polygon!";
+	Triangle t = Triangle(points[(k - 1 + n) % n], points[k], points[(k + 1) % n]);
+	return t.create_bisector(p);
+}
+
+void Polygon::delete_bad_points(vector<Point>& points)
+{
+	list<Point> l;
+	for (int i = 0; i < points.size(); i++) l.push_back(points[i]);
+	bool flag = true;
+	while (flag)
 	{
-		Triangle t(points[points.size() - 1], points[0], points[1]);
-		return t.create_bisector(p);
+		flag = false;
+		int n = l.get_size();
+		if (n < 3) break;
+		node<Point>* p = l.get_begin();
+		while(p)
+		{
+			Segment s;
+			if (p == l.get_begin())
+				s = Segment(l.get_end()->value, p->next->value);
+			else if (p == l.get_end())
+				s = Segment(p->last->value, l.get_begin()->value);
+			else
+				s = Segment(p->last->value, p->next->value);
+			if (s.is_on(p->value))
+			{
+				l.pop_node(p);
+				flag = true;
+				break;
+			}
+			p = p->next;
+		}
 	}
-	else if (k == points.size() - 1)
+	points.clear();
+	node<Point>* p = l.get_begin();
+	while(p)
 	{
-		Triangle t(points[k - 1], points[k], points[0]);
-		return t.create_bisector(p);
+		points.push_back(p->value);
+		p = p->next;
 	}
-	else
-	{
-		Triangle t(points[k - 1], points[k], points[k + 1]);
-		return t.create_bisector(p);
-	}	
 }
 
 // Realization is taken from
 // https://habr.com/ru/post/144921/
-Polygon convex_hull(const vector<Point>& given)
+vector<Point> Polygon::convex_hull(const vector<Point>& given)
 {
 	int n = given.size();
 	Point* a = new Point[n];
@@ -253,10 +298,5 @@ Polygon convex_hull(const vector<Point>& given)
 			size--;
 		}
 	}
-	return Polygon(shell);
-}
-
-Polygon convex_hull(const Polygon& p)
-{
-	return convex_hull(p.get_points());
+	return shell;
 }

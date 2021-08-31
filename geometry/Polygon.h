@@ -38,6 +38,8 @@ public:
 	friend Polygon operator+(const Polygon&, const Vector&);
 	friend Polygon operator-(const Polygon&, const Vector&);
 
+	const Point operator[](size_t index) const { return points[index]; }
+
 	// Rotate polygon on some angle (counter-clockwise of course) with respect to certain point
 	void rotate_polygon(double, const Point&);
 
@@ -47,7 +49,10 @@ public:
 	Ray create_bisector(const Point&);
 
 	void draw() const override;
+	void shift_by_vector(const pair<double, double>& p) override { for (size_t i = 0; i < points.size(); i++) points[i].shift_by_vector(p); *this = Polygon(points); }
 
-	friend Polygon convex_hull(const vector<Point>&);
-	friend Polygon convex_hull(const Polygon&);
+	// Delete all points that lie on sides
+	// <!> USE IT ONLY AFTER convex_hull to have points in right order!
+	static void delete_bad_points(vector<Point>&);
+	static vector<Point> convex_hull(const vector<Point>&);
 };

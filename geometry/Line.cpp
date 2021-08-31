@@ -1,4 +1,5 @@
 #include "Line.h"
+#include <algorithm>
 
 // SETTERS
 
@@ -82,11 +83,11 @@ int Line::check_halfplane(const Point& p)
 
 void Line::draw() const
 {
-	glBegin(GL_LINE);
+	glBegin(GL_LINES);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
-	glVertex2d((p0 - 5000*v).get_x(), (p0 - 5000*v).get_y());
-	glVertex2d((p0 + 5000*v).get_x(), (p0 + 5000*v).get_y());
+	glVertex2d((p0 - 50000*v).get_x(), (p0 - 50000*v).get_y());
+	glVertex2d((p0 + 50000*v).get_x(), (p0 + 50000*v).get_y());
 
 	glEnd();
 }
@@ -124,6 +125,11 @@ bool are_parallel(const Line& l1, const Line& l2)
 Line make_parallel_line(const Line& l, const Point& p)
 {
 	return Line(p, l.v);
+}
+
+Line make_perpendicular_line(const Line& l, const Point& p)
+{
+	return Line(p, l.n);
 }
 
 Point intersection(const Line& l1, const Line& l2)
@@ -233,7 +239,7 @@ bool Ray::is_on(const Point& p) const
 
 void Ray::draw() const
 {
-	glBegin(GL_LINE);
+	glBegin(GL_LINES);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
 	glVertex2d(p0.get_x(), p0.get_y());
@@ -262,6 +268,11 @@ Segment::Segment(const Point& a, const Point& b)
 	(*this) = Segment(l, a, b);
 }
 
+Line Segment::segment_bisection()
+{
+	return Line(avr_point, n);
+}
+
 bool Segment::is_on(const Point& p) const
 {
 	return A*p.get_x() + B*p.get_y() + C == 0 &&
@@ -270,7 +281,7 @@ bool Segment::is_on(const Point& p) const
 
 void Segment::draw() const
 {
-	glBegin(GL_LINE);
+	glBegin(GL_LINES);
 
 	glColor3ub(get_color().R, get_color().G, get_color().B);
 	glVertex2d(p0.get_x(), p0.get_y());
